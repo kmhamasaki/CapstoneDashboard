@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link as RouterLink, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import validate from 'validate.js';
@@ -10,10 +10,10 @@ import {
   TextField,
   Link,
   FormHelperText,
-  Checkbox,
   Typography
 } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import fire from '../../config/Fire';
 
 const schema = {
   firstName: {
@@ -185,10 +185,18 @@ const SignUp = props => {
     history.goBack();
   };
 
-  const handleSignUp = event => {
+  const handleSignUp = useCallback(async event => {
     event.preventDefault();
-    history.push('/');
-  };
+    const { email, password } = event.target.elements;
+    try {
+      await fire
+        .auth()
+        .createUserWithEmailAndPassword(email.value, password.value);
+    history.push("/");
+    } catch (error) {
+      alert(error);
+    }
+  }, [history]);
 
   const hasError = field =>
     formState.touched[field] && formState.errors[field] ? true : false;
@@ -315,31 +323,6 @@ const SignUp = props => {
                   value={formState.values.password || ''}
                   variant="outlined"
                 />
-                <div className={classes.policy}>
-                  <Checkbox
-                    checked={formState.values.policy || false}
-                    className={classes.policyCheckbox}
-                    color="primary"
-                    name="policy"
-                    onChange={handleChange}
-                  />
-                  <Typography
-                    className={classes.policyText}
-                    color="textSecondary"
-                    variant="body1"
-                  >
-                    I have read the{' '}
-                    <Link
-                      color="primary"
-                      component={RouterLink}
-                      to="#"
-                      underline="always"
-                      variant="h6"
-                    >
-                      Terms and Conditions
-                    </Link>
-                  </Typography>
-                </div>
                 {hasError('policy') && (
                   <FormHelperText error>
                     {formState.errors.policy[0]}
