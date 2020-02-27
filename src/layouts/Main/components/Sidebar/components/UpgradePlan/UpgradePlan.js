@@ -41,7 +41,7 @@ const UpgradePlan = props => {
           onClick={() => fire.auth().signOut()}
           variant="contained"
         >
-          Upgrade
+          Sign Out
         </Button>
       </div>
   );

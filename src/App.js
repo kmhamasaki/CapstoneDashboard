@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Router } from 'react-router-dom';
+import { Router, Route } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 import { Chart } from 'react-chartjs-2';
 import { ThemeProvider } from '@material-ui/styles';
@@ -12,7 +12,7 @@ import './assets/scss/index.scss';
 import validators from './common/validators';
 import Routes from './Routes';
 import { AuthProvider } from "./Auth";
-
+import { SignIn, SignUp } from './views';
 const browserHistory = createBrowserHistory();
 
 Chart.helpers.extend(Chart.elements.Rectangle.prototype, {
@@ -31,6 +31,8 @@ export default class App extends Component {
       <AuthProvider>
         <Router history={browserHistory}>
           <Routes />
+          <Route path="/sign-in" component={SignIn}/>
+          <Route path="/sign-up" component={SignUp}/>
         </Router>
        </AuthProvider> 
       </ThemeProvider>
