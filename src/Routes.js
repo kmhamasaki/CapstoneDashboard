@@ -12,12 +12,14 @@ import {
   Icons as IconsView,
   Account as AccountView,
   Settings as SettingsView,
+  MyWorkspace as MyWorkspaceView,
   SignUp as SignUpView,
   SignIn as SignInView,
-  NotFound as NotFoundView
+  NotFound as NotFoundView,
+  Goals as GoalsView,
 } from './views';
 
-const Routes = () => {
+export const Routes = () => {
   return (
     <Switch>
       <Redirect
@@ -68,6 +70,12 @@ const Routes = () => {
         path="/settings"
       />
       <RouteWithLayout
+        component={MyWorkspaceView}
+        exact
+        layout={MainLayout}
+        path="/my-workspace"
+      />
+      <RouteWithLayout
         component={SignUpView}
         exact
         layout={MinimalLayout}
@@ -85,9 +93,16 @@ const Routes = () => {
         layout={MinimalLayout}
         path="/not-found"
       />
+      <RouteWithLayout
+        component={GoalsView}
+        exact
+        layout={MainLayout}
+        path="/goals/:id"
+      />
       <Redirect to="/not-found" />
     </Switch>
   );
 };
+
 
 export default Routes;

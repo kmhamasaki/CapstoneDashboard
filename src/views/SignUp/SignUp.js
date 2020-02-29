@@ -14,6 +14,7 @@ import {
 } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import fire from '../../config/Fire';
+import firebase from 'firebase';
 
 const schema = {
   firstName: {
@@ -51,30 +52,6 @@ const useStyles = makeStyles(theme => ({
   grid: {
     height: '100%'
   },
-  quoteContainer: {
-    [theme.breakpoints.down('md')]: {
-      display: 'none'
-    }
-  },
-  quote: {
-    backgroundColor: theme.palette.neutral,
-    height: '100%',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundImage: 'url(/images/auth.jpg)',
-    backgroundSize: 'cover',
-    backgroundRepeat: 'no-repeat',
-    backgroundPosition: 'center'
-  },
-  quoteInner: {
-    textAlign: 'center',
-    flexBasis: '600px'
-  },
-  quoteText: {
-    color: theme.palette.white,
-    fontWeight: 300
-  },
   name: {
     marginTop: theme.spacing(3),
     color: theme.palette.white
@@ -100,6 +77,7 @@ const useStyles = makeStyles(theme => ({
     }
   },
   form: {
+        alignItems: 'center',
     paddingLeft: 100,
     paddingRight: 100,
     paddingBottom: 125,
@@ -175,10 +153,13 @@ const SignUp = props => {
     event.preventDefault();
     const { email, password } = event.target.elements;
     try {
-      await fire
+      await fire.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
+      .then(function() {
+        fire
         .auth()
         .createUserWithEmailAndPassword(email.value, password.value);
-    history.push("/");
+      })
+      history.push("/");
     } catch (error) {
       alert(error);
     }
@@ -189,119 +170,107 @@ const SignUp = props => {
 
   return (
     <div className={classes.root}>
-      <Grid
-        className={classes.grid}
-        container
-      >
-        <Grid
-          className={classes.content}
-          item
-          lg={7}
-          xs={12}
-        >
-          <div className={classes.content}>
-            <div className={classes.contentBody}>
-              <form
-                className={classes.form}
-                onSubmit={handleSignUp}
+        <div className={classes.content}>
+          <div className={classes.contentBody}>
+            <form
+              className={classes.form}
+              onSubmit={handleSignUp}
+            >
+              <Typography
+                className={classes.title}
+                variant="h2"
               >
-                <Typography
-                  className={classes.title}
-                  variant="h2"
+                Create new account
+              </Typography>
+              <Typography
+                color="textSecondary"
+                gutterBottom
+              >
+                Use your email to create new account
+              </Typography>
+              <TextField
+                className={classes.textField}
+                error={hasError('firstName')}
+                fullWidth
+                helperText={
+                  hasError('firstName') ? formState.errors.firstName[0] : null
+                }
+                label="First name"
+                name="firstName"
+                onChange={handleChange}
+                type="text"
+                value={formState.values.firstName || ''}
+                variant="outlined"
+              />
+              <TextField
+                className={classes.textField}
+                error={hasError('lastName')}
+                fullWidth
+                helperText={
+                  hasError('lastName') ? formState.errors.lastName[0] : null
+                }
+                label="Last name"
+                name="lastName"
+                onChange={handleChange}
+                type="text"
+                value={formState.values.lastName || ''}
+                variant="outlined"
+              />
+              <TextField
+                className={classes.textField}
+                error={hasError('email')}
+                fullWidth
+                helperText={
+                  hasError('email') ? formState.errors.email[0] : null
+                }
+                label="Email address"
+                name="email"
+                onChange={handleChange}
+                type="text"
+                value={formState.values.email || ''}
+                variant="outlined"
+              />
+              <TextField
+                className={classes.textField}
+                error={hasError('password')}
+                fullWidth
+                helperText={
+                  hasError('password') ? formState.errors.password[0] : null
+                }
+                label="Password"
+                name="password"
+                onChange={handleChange}
+                type="password"
+                value={formState.values.password || ''}
+                variant="outlined"
+              />
+              <Button
+                className={classes.signUpButton}
+                color="primary"
+                disabled={!formState.isValid}
+                fullWidth
+                size="large"
+                type="submit"
+                variant="contained"
+              >
+                Sign up now
+              </Button>
+              <Typography
+                color="textSecondary"
+                variant="body1"
+              >
+                Have an account?{' '}
+                <Link
+                  component={RouterLink}
+                  to="/sign-in"
+                  variant="h6"
                 >
-                  Create new account
-                </Typography>
-                <Typography
-                  color="textSecondary"
-                  gutterBottom
-                >
-                  Use your email to create new account
-                </Typography>
-                <TextField
-                  className={classes.textField}
-                  error={hasError('firstName')}
-                  fullWidth
-                  helperText={
-                    hasError('firstName') ? formState.errors.firstName[0] : null
-                  }
-                  label="First name"
-                  name="firstName"
-                  onChange={handleChange}
-                  type="text"
-                  value={formState.values.firstName || ''}
-                  variant="outlined"
-                />
-                <TextField
-                  className={classes.textField}
-                  error={hasError('lastName')}
-                  fullWidth
-                  helperText={
-                    hasError('lastName') ? formState.errors.lastName[0] : null
-                  }
-                  label="Last name"
-                  name="lastName"
-                  onChange={handleChange}
-                  type="text"
-                  value={formState.values.lastName || ''}
-                  variant="outlined"
-                />
-                <TextField
-                  className={classes.textField}
-                  error={hasError('email')}
-                  fullWidth
-                  helperText={
-                    hasError('email') ? formState.errors.email[0] : null
-                  }
-                  label="Email address"
-                  name="email"
-                  onChange={handleChange}
-                  type="text"
-                  value={formState.values.email || ''}
-                  variant="outlined"
-                />
-                <TextField
-                  className={classes.textField}
-                  error={hasError('password')}
-                  fullWidth
-                  helperText={
-                    hasError('password') ? formState.errors.password[0] : null
-                  }
-                  label="Password"
-                  name="password"
-                  onChange={handleChange}
-                  type="password"
-                  value={formState.values.password || ''}
-                  variant="outlined"
-                />
-                <Button
-                  className={classes.signUpButton}
-                  color="primary"
-                  disabled={!formState.isValid}
-                  fullWidth
-                  size="large"
-                  type="submit"
-                  variant="contained"
-                >
-                  Sign up now
-                </Button>
-                <Typography
-                  color="textSecondary"
-                  variant="body1"
-                >
-                  Have an account?{' '}
-                  <Link
-                    component={RouterLink}
-                    to="/sign-in"
-                    variant="h6"
-                  >
-                    Sign in
-                  </Link>
-                </Typography>
-              </form>
-            </div>
+                  Sign in
+                </Link>
+              </Typography>
+            </form>
           </div>
-        </Grid>
-      </Grid>
+        </div>
     </div>
   );
 };

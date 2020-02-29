@@ -11,6 +11,7 @@ import {
   Typography
 } from '@material-ui/core';
 import fire from '../../config/Fire.js';
+import firebase from 'firebase';
 
 const schema = {
   email: {
@@ -167,9 +168,12 @@ const SignIn = props => {
       event.preventDefault();
       const { email, password } = event.target.elements;
       try {
-        await fire
-          .auth()
-          .signInWithEmailAndPassword(email.value, password.value);
+        await fire.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+          .then(function() {
+            fire
+            .auth()
+            .signInWithEmailAndPassword(email.value, password.value);
+          })
         history.push("/");
       } catch (error) {
         alert(error);
@@ -180,6 +184,17 @@ const SignIn = props => {
     formState.touched[field] && formState.errors[field] ? true : false;
 
   return (
+    <div className={classes.root}>
+      <Grid
+        className={classes.grid}
+        container
+      >
+        <Grid
+          className={classes.content}
+          item
+          lg={7}
+          xs={12}
+        >
           <div className={classes.content}>
             <div className={classes.contentBody}>
               <form
@@ -253,6 +268,9 @@ const SignIn = props => {
               </form>
             </div>
           </div>
+        </Grid>
+      </Grid>
+    </div>
   );
 };
 
