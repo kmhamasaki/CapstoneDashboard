@@ -1,4 +1,4 @@
-import { React, useCallback, useState} from 'react';
+import React, { useCallback, useState} from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { 
   Grid, 
@@ -70,9 +70,10 @@ const MyWorkspace = () => {
 
   const handleClick = useCallback(
     async event => {
-      const { title} = event.target.elements;
-      alert(title);
-    });
+      const { title } = event.target.elements;
+      //alert(title);
+      setOpen(false);
+  });
   const classes = useStyles();
   let strategies = [
   {
@@ -159,7 +160,7 @@ const MyWorkspace = () => {
               variant="outlined"
               fullWidth
             />
-          <Button onClick={handleClick} color="primary">
+          <Button color="primary" type="submit">
             Subscribe
           </Button>
           </form>
