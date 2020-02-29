@@ -1,6 +1,7 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { Grid } from '@material-ui/core';
+import { withRouter } from 'react-router-dom';
 
 import {
   Budget,
@@ -105,4 +106,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default withRouter(Dashboard);

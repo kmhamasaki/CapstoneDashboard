@@ -158,8 +158,8 @@ const SignUp = props => {
         fire
         .auth()
         .createUserWithEmailAndPassword(email.value, password.value);
+        history.push("/");
       })
-      history.push("/");
     } catch (error) {
       alert(error);
     }

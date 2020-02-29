@@ -68,12 +68,11 @@ const MyWorkspace = () => {
     //dosomething here
   };
 
-  const handleClick = useCallback(
-    async event => {
-      const { title } = event.target.elements;
+  const workplaceHandleClick = event => {
+      //const { title } = event.target.elements;
       //alert(title);
-      setOpen(false);
-  });
+      //setOpen(false);
+  };
   const classes = useStyles();
   let strategies = [
   {
@@ -150,7 +149,7 @@ const MyWorkspace = () => {
         <DialogContent>
           <form
             className={classes.form}
-            onSubmit={handleClick}
+            onSubmit={workplaceHandleClick}
           >
             <TextField
               autoFocus

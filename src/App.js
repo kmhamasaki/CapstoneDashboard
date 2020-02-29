@@ -13,7 +13,7 @@ import validators from './common/validators';
 import {Routes } from './Routes';
 import { AuthProvider } from "./Auth";
 import { SignIn, SignUp, Goals } from './views';
-import fire from './config/Fire';
+import {fire, loggedIn} from './config/Fire';
 import { RouteWithLayout } from './components';
 
 const browserHistory = createBrowserHistory();
@@ -27,38 +27,44 @@ validate.validators = {
   ...validators
 };
 
-const authenticated = false;
+export var authenticated = false;
 const currentUser = null;
 
 export default class App extends Component {
 
   componentWillMount() {
     fire.auth().onAuthStateChanged(user => {
-      if (user) {
-        this.setState({
-          authenticated: true,
-          currentUser: user,
-        });
+      if (!!user) {
+        authenticated = true;
+        localStorage.setItem(loggedIn, true);
       } else {
-        this.setState({
-          authenticated: false,
-          currentUser: null,
-        });
+        localStorage.setItem(loggedIn, false);
+        authenticated = false;
+        browserHistory.push('/sign-in');
       }
   });
   }
-
+constructor(props) {
+  super(props);
+  fire.auth().onAuthStateChanged(this.onAuthStateChanged);
+  this.user = localStorage.getItem(loggedIn);
+  if(this.user != null) 
+    authenticated = true;
+}
+  onAuthStateChanged = (user) => {
+    this.setState({
+      loading: false,
+      user:  user,
+    });
+  };
   render() {
     return (
-
       <ThemeProvider theme={theme}>
-      <AuthProvider>
         <Router history={browserHistory}>
           <Routes />
           <Route path="/sign-in" component={SignIn}/>
           <Route path="/sign-up" component={SignUp}/>
         </Router>
-        </AuthProvider>
       </ThemeProvider>
     );
   }
