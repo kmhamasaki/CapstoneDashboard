@@ -1,6 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/styles';
-import { Grid, Typography } from '@material-ui/core';
+import { Button,Grid, Typography } from '@material-ui/core';
 import { withRouter} from 'react-router-dom';
 
 
@@ -10,8 +10,9 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Goals = () => {
+const Goals = props => {
   const classes = useStyles();
+  const { history } = props;
 
   return (
     <div className={classes.root}>
@@ -25,7 +26,12 @@ const Goals = () => {
                 >
                   Goals page
 
-                </Typography>       </Grid>
+                </Typography>
+                <Button onClick={() => history.push('/objectives')}>
+                Button
+                </Button>   
+
+                </Grid>
     </div>
   );
 };

@@ -36,7 +36,7 @@ const Topbar = props => {
         <Typography
           className={classes.bio}
           variant="h2"
-          color="white"
+          color="error"
         >
           Center for Engineering Diversity
         </Typography>

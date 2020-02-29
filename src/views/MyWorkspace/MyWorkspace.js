@@ -33,6 +33,8 @@ const useStyles = makeStyles(theme => ({
   },
   cardRoot: {
     height: '100%',
+    alignItems: 'center',
+
   },
   content: {
     alignItems: 'center',
@@ -49,8 +51,8 @@ const useStyles = makeStyles(theme => ({
     height: 32,
     width: 32
   },
-  CardContent: {
-
+  cardContent: {
+    alignContent: 'center',
   }
 }));
 
@@ -119,7 +121,7 @@ const MyWorkspace = () => {
           xs={12}
         >
           <Card className={classes.cardRoot}>
-            <CardContent>
+            <CardContent className={classes.cardContent}>
               <Grid
                 container
                 className = {classes.content}

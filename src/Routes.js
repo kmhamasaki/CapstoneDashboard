@@ -17,6 +17,7 @@ import {
   SignIn as SignInView,
   NotFound as NotFoundView,
   Goals as GoalsView,
+  Objectives as ObjectivesView,
 } from './views';
 
 export const Routes = () => {
@@ -93,6 +94,12 @@ export const Routes = () => {
         exact
         layout={MainLayout}
         path="/goals/:id"
+      />
+      <RouteWithLayout
+        component={ObjectivesView}
+        exact
+        layout={MainLayout}
+        path="/objectives"
       />
       <Redirect
         exact

@@ -10,3 +10,5 @@ export { default as Typography } from './Typography';
 export { default as UserList } from './UserList';
 export { default as MyWorkspace } from './MyWorkspace';
 export { default as Goals } from './Goals';
+export { default as Objectives } from './Objectives';
+
