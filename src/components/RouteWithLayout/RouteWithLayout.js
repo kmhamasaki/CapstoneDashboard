@@ -10,13 +10,12 @@ const RouteWithLayout = props => {
     <Route
       {...rest}
       render={matchProps => (
-        authenticated ? (
+        !authenticated ? (
+          <Redirect to="sign-in" />
+        ) :
         <Layout>
           <Component {...matchProps} />
         </Layout>
-        ) : (
-          <Redirect to="sign-in" />
-        )
       )}
     />
   );

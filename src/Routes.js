@@ -22,11 +22,6 @@ import {
 export const Routes = () => {
   return (
     <Switch>
-      <Redirect
-        exact
-        from="/"
-        to="/dashboard"
-      />
       <RouteWithLayout
         component={DashboardView}
         exact
@@ -98,6 +93,11 @@ export const Routes = () => {
         exact
         layout={MainLayout}
         path="/goals/:id"
+      />
+      <Redirect
+        exact
+        from="/"
+        to="/dashboard"
       />
       <Redirect to="/not-found" />
     </Switch>

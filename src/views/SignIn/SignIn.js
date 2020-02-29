@@ -10,8 +10,9 @@ import {
   Link,
   Typography
 } from '@material-ui/core';
-import fire from '../../config/Fire.js';
+import {fire, loggedIn} from '../../config/Fire.js';
 import firebase from 'firebase';
+import {authenticated} from 'App'
 
 const schema = {
   email: {
@@ -36,30 +37,6 @@ const useStyles = makeStyles(theme => ({
   },
   grid: {
     height: '100%'
-  },
-  quoteContainer: {
-    [theme.breakpoints.down('md')]: {
-      display: 'none'
-    }
-  },
-  quote: {
-    backgroundColor: theme.palette.neutral,
-    height: '100%',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundImage: 'url(/images/auth.jpg)',
-    backgroundSize: 'cover',
-    backgroundRepeat: 'no-repeat',
-    backgroundPosition: 'center'
-  },
-  quoteInner: {
-    textAlign: 'center',
-    flexBasis: '600px'
-  },
-  quoteText: {
-    color: theme.palette.white,
-    fontWeight: 300
   },
   name: {
     marginTop: theme.spacing(3),
@@ -173,8 +150,10 @@ const SignIn = props => {
             fire
             .auth()
             .signInWithEmailAndPassword(email.value, password.value);
-          history.push("/");
-        })
+          //authenticated = true;
+          history.push("/dashboard");
+          localStorage.setItem(loggedIn, true);
+          })
       } catch (error) {
         alert(error);
       }

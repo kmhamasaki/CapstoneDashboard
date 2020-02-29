@@ -36,8 +36,9 @@ export default class App extends Component {
     fire.auth().onAuthStateChanged(user => {
       if (!!user) {
         authenticated = true;
+        alert(39);
         localStorage.setItem(loggedIn, true);
-      } else {
+      } else if(authenticated == true) {
         localStorage.setItem(loggedIn, false);
         authenticated = false;
         browserHistory.push('/sign-in');
@@ -45,11 +46,11 @@ export default class App extends Component {
   });
   }
 constructor(props) {
+  alert("constructor");
   super(props);
   fire.auth().onAuthStateChanged(this.onAuthStateChanged);
-  this.user = localStorage.getItem(loggedIn);
-  if(this.user != null) 
-    authenticated = true;
+  this.loggedIn = localStorage.getItem(loggedIn) || authenticated;
+  authenticated = this.loggedIn;
 }
   onAuthStateChanged = (user) => {
     this.setState({
@@ -58,6 +59,7 @@ constructor(props) {
     });
   };
   render() {
+    alert(authenticated);
     return (
       <ThemeProvider theme={theme}>
         <Router history={browserHistory}>

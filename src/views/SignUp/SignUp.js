@@ -13,8 +13,9 @@ import {
   Typography
 } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import fire from '../../config/Fire';
+import {fire, loggedIn} from '../../config/Fire';
 import firebase from 'firebase';
+import {authenticated} from 'App'
 
 const schema = {
   firstName: {
@@ -158,6 +159,7 @@ const SignUp = props => {
         fire
         .auth()
         .createUserWithEmailAndPassword(email.value, password.value);
+        localStorage.setItem(loggedIn, true);
         history.push("/");
       })
     } catch (error) {
