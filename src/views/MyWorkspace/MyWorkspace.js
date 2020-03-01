@@ -74,7 +74,7 @@ class MyWorkspace extends React.Component {
   componentWillMount() {
     axios({
       method: 'post',
-      url: '/get_strategies',
+      url: 'http://localhost:4000/get_strategies',
       data: {
         workspaceId: 1,
         userId: 1

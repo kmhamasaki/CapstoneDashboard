@@ -43,16 +43,17 @@ export default class App extends Component {
         console.log("true");
         authenticated = true;
         localStorage.setItem(loggedIn, true);
-        if(browserHistory.location.pathname == 'sign-in' ||
-          browserHistory.location.pathname == 'sign-up') {
+        console.log(browserHistory.location.pathname)
+        if(browserHistory.location.pathname === '/sign-in' ||
+          browserHistory.location.pathname === '/sign-up') {
+          console.log(49);
           browserHistory.push('/dashboard');
         }
       } else {
         console.log("false")
         localStorage.setItem(loggedIn, false);
-        if(browserHistory.location.pathname != 'sign-in' ||
-          browserHistory.location.pathname != 'sign-up') {
-          alert(55);
+        if(browserHistory.location.pathname != '/sign-in' &&
+          browserHistory.location.pathname != '/sign-up') {
           browserHistory.push('/sign-in');
         }
         authenticated = false;
