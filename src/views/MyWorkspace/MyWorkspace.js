@@ -26,6 +26,8 @@ import {
 } from './components';
 import { withRouter} from 'react-router-dom';
 import AddIcon from '@material-ui/icons/Add';
+import POST_URL from 'App'
+import axios from 'axios';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -56,13 +58,51 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const MyWorkspace = () => {
-  const [open, setOpen] = React.useState(false);
+class MyWorkspace extends React.Component {
+
+  state = {
+    persons: []
+  }
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      error: null,
+      isLoaded: false,
+      items: []
+    };
+  }
+
+  componentWillMount() {
+    axios({
+      method: 'post',
+      url: POST_URL,
+      data: {
+        workspaceId: 1
+      }
+    })
+    .then(res => res.json())
+    .then(function (res) {
+      this.setState({
+            isLoaded: true,
+            data: res
+          });
+    });
+
+  };
+render() {
+  const classes = useStyles();
+
+  const { error, isLoaded, data } = this.state;
+
+  if(!isLoaded) {
+    return <div>Loading...</div>;
+  }
 
   const handleClickOpen = () => {
     setOpen(true);
   };
-
+  let strategies = data;
   const handleClose = () => {
     setOpen(false);
   };
@@ -75,8 +115,7 @@ const MyWorkspace = () => {
       //alert(title);
       //setOpen(false);
   };
-  const classes = useStyles();
-  let strategies = [
+  /*let strategies = [
   {
     name: "Stategy 0",
     progress: 50,
@@ -97,83 +136,83 @@ const MyWorkspace = () => {
     progress: 43,
     id: 3,
   }
-  ];
-
-  var cards=[];
+  ];*/
+  const cards=[];
 
   for(var i=0;i<strategies.length;i++){
     // push the component to elements!
     cards.push(<TasksProgress strategy={ strategies[i] } />);
   }
 
-  return (
-    <div className={classes.root}>
-      <Grid
-        container
-        spacing={4}
-      >
-        {cards}
-         <Grid
-          item
-          lg={4}
-          sm={6}
-          xl={4}
-          xs={12}
+    return (
+      <div className={classes.root}>
+        <Grid
+          container
+          spacing={4}
         >
-          <Card className={classes.cardRoot}>
-            <CardContent className={classes.cardContent}>
-              <Grid
-                container
-                className = {classes.content}
-              >
-                <Grid item>
-                  <IconButton aria-label="add" onClick={handleClickOpen}>
-                    <AddIcon className={classes.addIcon} />
-                  </IconButton>
-                </Grid>
-                <Grid item>
-                  <Typography
-                    className={classes.title}
-                    color="textSecondary"
-                    gutterBottoms
-                    variant="h1"
-                  >
-                  Add Strategy
-                  </Typography>
-                </Grid>
-              </Grid>
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
-      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-        <DialogTitle id="form-dialog-title">Add Strategy</DialogTitle>
-        <DialogContent>
-          <form
-            className={classes.form}
-            onSubmit={workplaceHandleClick}
+          {cards}
+           <Grid
+            item
+            lg={4}
+            sm={6}
+            xl={4}
+            xs={12}
           >
-            <TextField
-              autoFocus
-              margin="dense"
-              name="title"
-              label="Title"
-              variant="outlined"
-              fullWidth
-            />
-          <Button color="primary" type="submit">
-            Subscribe
-          </Button>
-          </form>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            Subscribe
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </div>
-  );
+            <Card className={classes.cardRoot}>
+              <CardContent className={classes.cardContent}>
+                <Grid
+                  container
+                  className = {classes.content}
+                >
+                  <Grid item>
+                    <IconButton aria-label="add" onClick={handleClickOpen}>
+                      <AddIcon className={classes.addIcon} />
+                    </IconButton>
+                  </Grid>
+                  <Grid item>
+                    <Typography
+                      className={classes.title}
+                      color="textSecondary"
+                      gutterBottoms
+                      variant="h1"
+                    >
+                    Add Strategy
+                    </Typography>
+                  </Grid>
+                </Grid>
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid>
+        <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+          <DialogTitle id="form-dialog-title">Add Strategy</DialogTitle>
+          <DialogContent>
+            <form
+              className={classes.form}
+              onSubmit={workplaceHandleClick}
+            >
+              <TextField
+                autoFocus
+                margin="dense"
+                name="title"
+                label="Title"
+                variant="outlined"
+                fullWidth
+              />
+            <Button color="primary" type="submit">
+              Subscribe
+            </Button>
+            </form>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose} color="primary">
+              Subscribe
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
+    );
+  };
 };
 
 export default withRouter(MyWorkspace);

@@ -27,18 +27,23 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+
 const UpgradePlan = props => {
-  const { className, ...rest } = props;
+  const { className, history, ...rest } = props;
 
   const classes = useStyles();
 
+  function logOut() {
+    fire.auth().signOut();
+    console.log("Signingout");
+  }
   return (
 
       <div className={classes.actions}>
         <Button
           color="primary"
           component="a"
-          onClick={() => fire.auth().signOut()}
+          onClick={logOut}
           variant="contained"
         >
           Sign Out

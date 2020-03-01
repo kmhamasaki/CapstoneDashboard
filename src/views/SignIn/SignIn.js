@@ -150,8 +150,6 @@ const SignIn = props => {
             fire
             .auth()
             .signInWithEmailAndPassword(email.value, password.value);
-          //authenticated = true;
-          history.push("/dashboard");
           localStorage.setItem(loggedIn, true);
           })
       } catch (error) {

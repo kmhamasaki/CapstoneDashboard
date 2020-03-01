@@ -160,7 +160,6 @@ const SignUp = props => {
         .auth()
         .createUserWithEmailAndPassword(email.value, password.value);
         localStorage.setItem(loggedIn, true);
-        history.push("/");
       })
     } catch (error) {
       alert(error);

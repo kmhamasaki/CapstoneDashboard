@@ -29,7 +29,7 @@ validate.validators = {
 
 export var authenticated = false;
 const currentUser = null;
-
+export const POST_URL = 'http://localhost:4000';
 export default class App extends Component {
 
   componentWillMount() {
@@ -37,12 +37,21 @@ export default class App extends Component {
 
     fire.auth().onAuthStateChanged(user => {
       if (!!user) {
+        console.log("true");
         authenticated = true;
         localStorage.setItem(loggedIn, true);
-      } else if(authenticated == true) {
+        if(browserHistory.location.pathname != 'sign-in' ||
+          browserHistory.location.pathname != 'sign-up') {
+          browserHistory.push('/dashboard');
+        }
+      } else {
+        console.log("false")
         localStorage.setItem(loggedIn, false);
+        if(browserHistory.location.pathname != 'sign-in' ||
+          browserHistory.location.pathname != 'sign-up') {
+          browserHistory.push('/sign-in');
+        }
         authenticated = false;
-        browserHistory.push('/sign-in');
       }
     });
     this.setState({ loading: 'false' });
