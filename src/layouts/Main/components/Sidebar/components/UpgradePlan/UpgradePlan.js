@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import { Button, colors } from '@material-ui/core';
 import fire from '../../../../../../config/Fire';
+import { withRouter } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -35,6 +36,7 @@ const UpgradePlan = props => {
 
   function logOut() {
     fire.auth().signOut();
+    history.push('/sign-in');
     console.log("Signingout");
   }
   return (
@@ -56,4 +58,4 @@ UpgradePlan.propTypes = {
   className: PropTypes.string
 };
 
-export default UpgradePlan;
+export default withRouter(UpgradePlan);

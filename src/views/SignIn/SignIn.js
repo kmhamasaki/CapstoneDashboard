@@ -66,9 +66,7 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 1,
     display: 'flex',
     alignItems: 'center',
-    [theme.breakpoints.down('md')]: {
-      justifyContent: 'center'
-    }
+    justifyContent: 'center'
   },
   form: {
     paddingLeft: 100,
@@ -151,6 +149,7 @@ const SignIn = props => {
             .auth()
             .signInWithEmailAndPassword(email.value, password.value);
           localStorage.setItem(loggedIn, true);
+          history.push('/my-workspace');
           })
       } catch (error) {
         alert(error);
@@ -169,7 +168,6 @@ const SignIn = props => {
         <Grid
           className={classes.content}
           item
-          lg={7}
           xs={12}
         >
           <div className={classes.content}>

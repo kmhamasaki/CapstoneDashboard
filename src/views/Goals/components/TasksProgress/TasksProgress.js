@@ -54,7 +54,7 @@ const TasksProgress = props => {
           xl={4}
           xs={12}
         >
-        <div style={{ cursor: 'pointer' }} onClick={() => history.push('/goals/'+props.strategy.id)}>
+        <div style={{ cursor: 'pointer' }} onClick={() => history.push('/objectives/'+props.goal.id)}>
 
     <Card
       {...rest}
@@ -72,14 +72,14 @@ const TasksProgress = props => {
               gutterBottoms
               variant="h1"
             >
-              {props.strategy.name}
+              {props.goal.name}
             </Typography>
-            <Typography variant="h3">{props.strategy.progress}%</Typography>
+            <Typography variant="h3">{props.goal.progress}%</Typography>
           </Grid>
         </Grid>
         <LinearProgress
           className={classes.progress}
-          value={props.strategy.progress}
+          value={props.goal.progress}
           variant="determinate"
         />
       </CardContent>

@@ -99,7 +99,7 @@ export const Routes = () => {
         component={ObjectivesView}
         exact
         layout={MainLayout}
-        path="/objectives"
+        path="/objectives/:id"
       />
       <Redirect
         exact

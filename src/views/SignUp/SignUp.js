@@ -73,9 +73,8 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 1,
     display: 'flex',
     alignItems: 'center',
-    [theme.breakpoints.down('md')]: {
       justifyContent: 'center'
-    }
+
   },
   form: {
         alignItems: 'center',

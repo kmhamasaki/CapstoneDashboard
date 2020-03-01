@@ -44,18 +44,19 @@ export default class App extends Component {
         authenticated = true;
         localStorage.setItem(loggedIn, true);
         console.log(browserHistory.location.pathname)
-        if(browserHistory.location.pathname === '/sign-in' ||
-          browserHistory.location.pathname === '/sign-up') {
-          console.log(49);
-          browserHistory.push('/dashboard');
-        }
+        // if(browserHistory.location.pathname === '/sign-in' ||
+        //   browserHistory.location.pathname === '/sign-up') {
+        //   console.log(49);
+        //   browserHistory.push('/dashboard');
+        // }
       } else {
         console.log("false")
+        console.log(this.props.location.pathname);
         localStorage.setItem(loggedIn, false);
-        if(browserHistory.location.pathname != '/sign-in' &&
-          browserHistory.location.pathname != '/sign-up') {
-          browserHistory.push('/sign-in');
-        }
+        // if(this.props.location != '/sign-in' &&
+        //   browserHistory.location.pathname != '/sign-up') {
+        //   browserHistory.push('/sign-in');
+        // }
         authenticated = false;
       }
     });

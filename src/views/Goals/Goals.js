@@ -107,7 +107,7 @@ class Goals extends React.Component {
         open: true
       });
     };
-    let strategies = data;
+    let goals = data;
     const handleClose = () => {
       this.setState({
         open: false
@@ -138,9 +138,9 @@ class Goals extends React.Component {
 
     const cards=[];
 
-    for(var i=0;i<strategies.length;i++){
+    for(var i=0;i<goals.length;i++){
       // push the component to elements!
-      cards.push(<TasksProgress strategy={ strategies[i] } />);
+      cards.push(<TasksProgress goal={ goals[i] } />);
     }
 
       return (
@@ -175,7 +175,7 @@ class Goals extends React.Component {
                         gutterBottoms
                         variant="h1"
                       >
-                      Add Strategy
+                      Add Goal
                       </Typography>
                     </Grid>
                   </Grid>
@@ -184,7 +184,7 @@ class Goals extends React.Component {
             </Grid>
           </Grid>
           <Dialog open={this.state.open} onClose={handleClose} aria-labelledby="form-dialog-title">
-            <DialogTitle id="form-dialog-title">Add Strategy</DialogTitle>
+            <DialogTitle id="form-dialog-title">Add Goal</DialogTitle>
             <DialogContent>
               <form
                 className={classes.form}
