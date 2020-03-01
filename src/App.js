@@ -15,6 +15,7 @@ import { AuthProvider } from "./Auth";
 import { SignIn, SignUp, Goals } from './views';
 import {fire, loggedIn} from './config/Fire';
 import { RouteWithLayout } from './components';
+import axios from 'axios';
 
 const browserHistory = createBrowserHistory();
 
@@ -29,7 +30,10 @@ validate.validators = {
 
 export var authenticated = false;
 const currentUser = null;
-export const POST_URL = 'http://localhost:4000';
+
+//axios.defaults.baseURL = 'http://localhost:4000';
+axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+
 export default class App extends Component {
 
   componentWillMount() {
@@ -40,8 +44,8 @@ export default class App extends Component {
         console.log("true");
         authenticated = true;
         localStorage.setItem(loggedIn, true);
-        if(browserHistory.location.pathname != 'sign-in' ||
-          browserHistory.location.pathname != 'sign-up') {
+        if(browserHistory.location.pathname == 'sign-in' ||
+          browserHistory.location.pathname == 'sign-up') {
           browserHistory.push('/dashboard');
         }
       } else {
