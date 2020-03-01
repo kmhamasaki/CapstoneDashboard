@@ -118,9 +118,22 @@ class MyWorkspace extends React.Component {
     };
 
     const workplaceHandleClick = event => {
-        //const { title } = event.target.elements;
-        //alert(title);
-        //setOpen(false);
+      event.preventDefault();
+
+      this.setState({
+        open: false
+      });
+      const { title } = event.target.elements;
+      console.log(title.value);
+      const name = title.value;
+      axios({
+      method: 'post',
+        url: '/create_strategy',
+        data: {
+          name: {name},
+          userId: 1
+        }
+      })
     };
 
     const cards=[];
@@ -190,11 +203,6 @@ class MyWorkspace extends React.Component {
               </Button>
               </form>
             </DialogContent>
-            <DialogActions>
-              <Button onClick={handleClose} color="primary">
-                Subscribe
-              </Button>
-            </DialogActions>
           </Dialog>
         </div>
       );

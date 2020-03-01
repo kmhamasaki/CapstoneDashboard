@@ -31,7 +31,6 @@ validate.validators = {
 export var authenticated = false;
 const currentUser = null;
 
-//axios.defaults.baseURL = 'http://localhost:4000';
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 
 export default class App extends Component {
@@ -53,6 +52,7 @@ export default class App extends Component {
         localStorage.setItem(loggedIn, false);
         if(browserHistory.location.pathname != 'sign-in' ||
           browserHistory.location.pathname != 'sign-up') {
+          alert(55);
           browserHistory.push('/sign-in');
         }
         authenticated = false;
