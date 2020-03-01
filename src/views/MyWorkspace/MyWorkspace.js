@@ -40,11 +40,11 @@ const classes = theme => ({
 
   },
   content: {
+    backgroundColor: 'blue',
     alignItems: 'center',
     display: 'flex',
-    alignContent: 'center',
-    justify:"center",
-
+    alignItems: 'center',
+    justify:"center"
   },
   title: {
     fontWeight: 700,
@@ -55,7 +55,8 @@ const classes = theme => ({
     width: 32
   },
   cardContent: {
-    alignContent: 'center',
+    alignItems: 'center',
+    alignContent: 'center'
   }
 });
 
@@ -97,6 +98,7 @@ class MyWorkspace extends React.Component {
   render() {
     const { error, isLoaded, data } = this.state;
     const { classes } = this.props;
+    console.log(classes);
 
     while(!isLoaded) {
       return <div>not here</div>
@@ -145,6 +147,8 @@ class MyWorkspace extends React.Component {
 
       return (
         <div className={classes.root}>
+
+
           <Grid
             container
             spacing={4}
@@ -152,9 +156,9 @@ class MyWorkspace extends React.Component {
             {cards}
              <Grid
               item
+              xl={4}
               lg={4}
               sm={6}
-              xl={4}
               xs={12}
             >
               <Card className={classes.cardRoot}>

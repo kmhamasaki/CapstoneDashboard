@@ -20,9 +20,11 @@ import {
   Typography
 } from '@material-ui/core';
 import PerfectScrollbar from 'react-perfect-scrollbar'
+import axios from 'axios';
 import { withRouter} from 'react-router-dom';
+import { withStyles } from '@material-ui/styles';
 
-const useStyles = makeStyles(theme => ({
+const classes = theme => ({
   content: {
     padding: 0
   },
@@ -48,112 +50,125 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(1),
     justifyContent: 'flex-end'
   }
-}));
-
-let objectives = [
-{
-  title: "Objective 0",
-  startDate: "4/1/20",
-  dueDate: "1/10/20",
-  people: "Kristyn",
-  tags: "Tag 1",
-  completion: "Done",
-  id: 0,
-},
-{
-  title: "Objective 1",
-  startDate: "1/1/20",
-  dueDate: "2/30/20",
-  people: "Kristyn",
-  tags: "Tag 1",
-  completion: "Done",
-  id: 1,
-},
-{
-  title: "Objective 2",
-  startDate: "1/1/20",
-  dueDate: "2/3/20",
-  people: "Kristyn",
-  tags: "Tag 1",
-  completion: "Done",
-  id: 2,
-},
-{
-  title: "Objective 3",
-  startDate: "3/1/20",
-  dueDate: "9/10/20",
-  people: "Kristyn",
-  tags: "Tag 1",
-  completion: "Done",
-  id: 3,
-},
-{
-  title: "Objective 4",
-  startDate: "9/13/20",
-  dueDate: "9/21/20",
-  people: "Kristyn",
-  tags: "Tag 1",
-  completion: "Done",
-  id: 4,
-},
-];
-const Objectives = props => {
-  const classes = useStyles();
-
-  return (
-    <div className={classes.root}>
-    <div className={classes.contentTable}>
-    <div>
-      <Card>
-        <CardHeader
-          title="Your Objectives"
-        />
-        <Divider />
-        <CardContent className={classes.content}>
-          <PerfectScrollbar>
-            <div className={classes.inner}>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Title</TableCell>
-                    <TableCell>Start Date</TableCell>
-                    <TableCell>Due Date</TableCell>
-                    <TableCell>People</TableCell>
-                    <TableCell>Tags</TableCell>
-                    <TableCell >Completion</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {objectives.map(objective => (
-                    <TableRow
-                      hover
-                      key={objective.id}
-                    >
-                      <TableCell>
-                        {objective.title}
-                      </TableCell>
-                      <TableCell>{objective.startDate}</TableCell>
-                      <TableCell>
-                        {objective.dueDate}
-                      </TableCell>
-                      <TableCell>{objective.people}</TableCell>
-                      <TableCell>{objective.tags}</TableCell>
-                      <TableCell>
-                        {objective.completion}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          </PerfectScrollbar>
-        </CardContent>
-      </Card>
-    </div>
-    </div>
-    </div>
-  );
-};
+});
 
 
-export default withRouter(Objectives);
+class Objectives extends React.Component{
+  
+  constructor(props) {
+    super(props);
+    this.state = {
+      error: null,
+      isLoaded: false,
+      items: [],
+      open: false
+    };
+  }
+
+  componentWillMount() {
+    axios({
+      method: 'get',
+      url: 'http://localhost:4000/get_my_objectives',
+      data: {
+        userId: 1,
+        goalId: 2
+      }
+    })
+    .catch(function (error) {
+    // handle error
+      alert(error);
+    })
+    .then(function (res) {
+      console.log(res);
+      let data = res.data;
+      this.setState({
+            isLoaded: true,
+            data: data
+          });
+    }.bind(this));
+
+  };
+
+  render(){
+    const { error, isLoaded, data } = this.state;
+    const { classes } = this.props;
+
+    console.log(classes);
+
+    while(!isLoaded) {
+      return <div>not here</div>
+    }
+
+    const handleClickOpen = () => {
+      this.setState({
+        open: true
+      });
+    };
+    console.log(data);
+    let objectives = data;
+    const handleClose = () => {
+      this.setState({
+        open: false
+      });
+    };
+    const handleCreate = () => {
+      //dosomething here
+    };
+
+    return (
+      <div className={classes.root}>
+        <div className={classes.contentTable}>
+        <div>
+          <Card>
+            <CardHeader
+              title="Your Objectives"
+            />
+            <Divider />
+            <CardContent className={classes.content}>
+              <PerfectScrollbar>
+                <div className={classes.inner}>
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Title</TableCell>
+                        <TableCell>Start Date</TableCell>
+                        <TableCell>Due Date</TableCell>
+                        <TableCell>People</TableCell>
+                        <TableCell>Tags</TableCell>
+                        <TableCell >Completion</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {objectives.map(objective => (
+                        <TableRow
+                          hover
+                          key={objective.id}
+                        >
+                          <TableCell>
+                            {objective.title}
+                          </TableCell>
+                          <TableCell>{objective.startDate}</TableCell>
+                          <TableCell>
+                            {objective.dueDate}
+                          </TableCell>
+                          <TableCell>{objective.people}</TableCell>
+                          <TableCell>{objective.tags}</TableCell>
+                          <TableCell>
+                            {objective.completion}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </PerfectScrollbar>
+            </CardContent>
+          </Card>
+        </div>
+        </div>
+      </div>
+    )
+  }
+}
+
+export default withStyles(classes)(withRouter(Objectives));
