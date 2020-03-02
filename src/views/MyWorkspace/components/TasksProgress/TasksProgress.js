@@ -45,7 +45,7 @@ const TasksProgress = props => {
   const { className, history, ...rest } = props;
 
   const classes = useStyles();
-
+  
   return (
     <Grid
           item

@@ -5,6 +5,7 @@ import {
   IconButton, 
   Card, 
   CardContent,
+  CardMedia,
   Typography, 
   TextField,
   Dialog,
@@ -12,7 +13,8 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Button
+  Button,
+  Tooltip
 } from '@material-ui/core';
 import {
   Budget,
@@ -29,6 +31,7 @@ import AddIcon from '@material-ui/icons/Add';
 import POST_URL from 'App'
 import axios from 'axios';
 import { withStyles } from '@material-ui/styles';
+import AddCard from '../../components/AddCard';
 
 const classes = theme => ({
   root: {
@@ -37,10 +40,10 @@ const classes = theme => ({
   cardRoot: {
     height: '100%',
     alignItems: 'center',
+    display: 'flex'
 
   },
   content: {
-    backgroundColor: 'blue',
     alignItems: 'center',
     display: 'flex',
     alignItems: 'center',
@@ -57,6 +60,10 @@ const classes = theme => ({
   cardContent: {
     alignItems: 'center',
     alignContent: 'center'
+  },
+  maxHeightWidth: {
+    height: "100%",
+    width: "100%"
   }
 });
 
@@ -98,7 +105,6 @@ class MyWorkspace extends React.Component {
   render() {
     const { error, isLoaded, data } = this.state;
     const { classes } = this.props;
-    console.log(classes);
 
     while(!isLoaded) {
       return <div>not here</div>
@@ -109,7 +115,6 @@ class MyWorkspace extends React.Component {
         open: true
       });
     };
-    let strategies = data;
     const handleClose = () => {
       this.setState({
         open: false
@@ -138,6 +143,7 @@ class MyWorkspace extends React.Component {
       })
     };
 
+    const strategies = data.strategies;
     const cards=[];
 
     for(var i=0;i<strategies.length;i++){
@@ -154,6 +160,28 @@ class MyWorkspace extends React.Component {
             spacing={4}
           >
             {cards}
+              <Grid
+              item
+              xl={4}
+              lg={4}
+              sm={6}
+              xs={12}
+              >
+              <Card className={classes.cardRoot}>
+                  <CardMedia className={classes.cardContent, classes.maxHeightWidth}>
+                    <Tooltip title="Add Strategy">
+                      <Button
+                        variant="contained"
+                        color="default"
+                        className={classes.button,classes.maxHeightWidth}
+                        startIcon={<AddIcon />}
+                        onClick={handleClickOpen}
+                      > 
+                      </Button>
+                    </Tooltip>
+                  </CardMedia>
+                </Card>
+              </Grid>
              <Grid
               item
               xl={4}

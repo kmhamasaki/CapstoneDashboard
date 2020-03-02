@@ -21,7 +21,7 @@ import {
 } from '@material-ui/core';
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import axios from 'axios';
-import { withRouter} from 'react-router-dom';
+import { withRouter, useParams} from 'react-router-dom';
 import { withStyles } from '@material-ui/styles';
 
 const classes = theme => ({
@@ -63,6 +63,9 @@ class Objectives extends React.Component{
       items: [],
       open: false
     };
+
+    // this is how you get the url parameter
+    this.goalId = props.match.params.id;
   }
 
   componentWillMount() {
@@ -71,7 +74,7 @@ class Objectives extends React.Component{
       url: 'http://localhost:4000/get_my_objectives',
       data: {
         userId: 1,
-        goalId: 2
+        goalId: this.id
       }
     })
     .catch(function (error) {
