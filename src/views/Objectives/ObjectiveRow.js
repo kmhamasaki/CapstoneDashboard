@@ -73,11 +73,11 @@ class ObjectiveRow extends React.Component{
 	          	align="right"
 	          	style={{width: 96+16+16}}
 	          >
-	          	<IconButton aria-label="delete">
-				  <DeleteIcon />
-				</IconButton>
 	          	<IconButton aria-label="edit" onClick={()=>this.props.openEditor(objective)}>
 				  <EditIcon />
+				</IconButton>
+				<IconButton aria-label="delete">
+				  <DeleteIcon />
 				</IconButton>
 	          </TableCell>
 	        </TableRow>
