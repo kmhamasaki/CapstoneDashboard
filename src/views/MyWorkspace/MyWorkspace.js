@@ -131,18 +131,43 @@ class MyWorkspace extends React.Component {
         open: false
       });
       const { title } = event.target.elements;
-      console.log(title.value);
-      const name = title.value;
+      console.log(title[0].value);
+      console.log(title[1].value);
+      const name = title[0].value;
+      const description = title[1].value;
       axios({
       method: 'post',
         url: '/create_strategy',
         data: {
-          name: {name},
-          userId: 1
+          name: name,
+          description: description
         }
       })
+      .catch(function (error) {
+      // handle error
+        alert(error);
+      })
+      .then(function (res) {
+        console.log(res);
+        let responseData = res.data;
+        let newStrategy = {
+          strategyId : responseData.strategyId,
+          name : name,
+          goals : [],
+          description : description
+        }
+        data.strategies.push(newStrategy);
+        // setting the state "refreshes the page"
+        // when you set state, it calls render() again
+        this.setState({
+            isLoaded: true,
+            data: data
+          });
+      }.bind(this));
+
     };
 
+    console.log(data)
     const strategies = data.strategies;
     const cards=[];
 
@@ -216,7 +241,7 @@ class MyWorkspace extends React.Component {
             </Grid>
           </Grid>
           <Dialog open={this.state.open} onClose={handleClose} aria-labelledby="form-dialog-title">
-            <DialogTitle id="form-dialog-title">Add Strategy</DialogTitle>
+            <DialogTitle id="form-dialog-title">Create New Strategy</DialogTitle>
             <DialogContent>
               <form
                 className={classes.form}
@@ -224,14 +249,26 @@ class MyWorkspace extends React.Component {
               >
                 <TextField
                   autoFocus
+                  id="title"
                   margin="dense"
                   name="title"
                   label="Title"
+                  multiline
+                  variant="outlined"
+                  fullWidth
+                />
+                <TextField
+                  id="title"
+                  margin="dense"
+                  name="description"
+                  label="Description"
+                  multiline
+                  rows="4"
                   variant="outlined"
                   fullWidth
                 />
               <Button color="primary" type="submit">
-                Subscribe
+                Create
               </Button>
               </form>
             </DialogContent>

@@ -69,6 +69,8 @@ class Goals extends React.Component {
       items: [],
       open: false
     };
+    this.strategyId = props.match.params.id
+    console.log(this.strategyId)
   }
 
   componentWillMount() {
@@ -76,8 +78,7 @@ class Goals extends React.Component {
       method: 'post',
       url: 'http://localhost:4000/get_goals',
       data: {
-        userId: 1,
-        strategyId: this.props.match.params.id
+        goalId: this.strategyId
       }
     })
     .catch(function (error) {
