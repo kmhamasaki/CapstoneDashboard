@@ -35,7 +35,7 @@ const useStyles = makeStyles(theme => ({
     width: 32
   },
   progress: {
-    marginTop: theme.spacing(3)
+    marginTop: theme.spacing(3),
   }
 }));
 
@@ -81,6 +81,7 @@ const TasksProgress = props => {
           className={classes.progress}
           value={props.goal.progress}
           variant="determinate"
+          color="secondary"
         />
       </CardContent>
     </Card>

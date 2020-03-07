@@ -142,18 +142,18 @@ const SignIn = props => {
     async event => {
       event.preventDefault();
       const { email, password } = event.target.elements;
-      try {
-        await fire.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-          .then(function() {
-            fire
-            .auth()
-            .signInWithEmailAndPassword(email.value, password.value);
-          localStorage.setItem(loggedIn, true);
-          history.push('/my-workspace');
+      await fire.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+        .then(function() {
+          fire
+          .auth()
+          .signInWithEmailAndPassword(email.value, password.value).then(() => {
+            localStorage.setItem(loggedIn, true);
+            history.push('/my-workspace');
           })
-      } catch (error) {
-        alert(error);
-      }
+          .catch(error => {
+            alert(error);
+          });
+        })
     }, [history]);
 
   const hasError = field =>
