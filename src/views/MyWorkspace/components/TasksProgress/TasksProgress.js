@@ -45,7 +45,7 @@ const TasksProgress = props => {
   const { className, history, ...rest } = props;
 
   const classes = useStyles();
-
+  
   return (
     <Grid
           item
@@ -54,7 +54,7 @@ const TasksProgress = props => {
           xl={4}
           xs={12}
         >
-        <div style={{ cursor: 'pointer' }} onClick={() => history.push('/goals/'+props.strategy.id)}>
+        <div style={{ cursor: 'pointer' }} onClick={() => history.push('/goals/'+props.strategy.strategyId)}>
 
     <Card
       {...rest}
