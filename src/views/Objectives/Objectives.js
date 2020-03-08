@@ -139,23 +139,33 @@ class Objectives extends React.Component{
         openAdd: true
       });
     };
-    console.log(data);
-    let objectives = data;
+
     const closeAddEditor = () => {
       this.setState({
         openAdd: false
       });
     };
-    const handleCreate = () => {
-      //dosomething here
-    };
 
-    const addNewObjective = () => {
+    const addNewObjective = event => {
       console.log("new!")
     }
 
-    const editObjective = () => {
-      console.log("edit!")
+    const editObjective = event => {
+      event.preventDefault();
+
+      let deets = event.target.elements;
+      console.log(deets);
+      const objective = {
+        objectiveId : this.state.objective.id,
+        title: event.target.elements.title.value,
+        startDate: event.target.elements.startDate.value,
+        dueDate: event.target.elements.dueDate.value,
+        people: event.target.elements.people.value,
+        tags: event.target.elements.tags.value,
+        completion: "Done"
+      }
+      console.log(objective)
+      this.closeEditor()
     }
 
     const ObjectiveRows = objectivesData.map(objective => (
