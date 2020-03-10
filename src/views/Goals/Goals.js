@@ -70,7 +70,6 @@ class Goals extends React.Component {
       open: false
     };
     this.strategyId = props.match.params.id
-    console.log(this.strategyId)
   }
 
   componentWillMount() {
@@ -78,7 +77,7 @@ class Goals extends React.Component {
       method: 'post',
       url: 'http://localhost:4000/get_goals',
       data: {
-        goalId: this.strategyId
+        strategyId: this.strategyId
       }
     })
     .catch(function (error) {
@@ -108,7 +107,6 @@ class Goals extends React.Component {
         open: true
       });
     };
-    let goals = data;
     const handleClose = () => {
       this.setState({
         open: false
@@ -124,19 +122,48 @@ class Goals extends React.Component {
       this.setState({
         open: false
       });
-      const { title } = event.target.elements;
-      console.log(title.value);
-      const name = title.value;
+      console.log(event.target.elements)
+      const name = event.target.elements.title.value;
+      console.log(name)
+      const description = event.target.elements.description.value;
+      console.log(description)
       axios({
       method: 'post',
-        url: '/create_strategy',
+        url: '/create_goal',
         data: {
-          name: {name},
-          userId: 1
+          strategyId: this.state.strategyId,
+          name: name,
+          description: description,
+          startDate: "01/01/2020",
+          endDate: "01/01/2020"
         }
       })
+      .catch(function (error) {
+      // handle error
+        alert(error);
+      })
+      .then(function (res) {
+        console.log(res);
+        let responseData = res.data;
+        let newStrategy = {
+          strategyId : responseData.strategyId,
+          name : name,
+          goals : [],
+          description : description
+        }
+        data.goals.push(newStrategy);
+        // setting the state "refreshes the page"
+        // when you set state, it calls render() again
+        this.setState({
+            isLoaded: true,
+            data: data
+          });
+      }.bind(this));
     };
 
+    let goals = data.goals;
+    console.log(goals)
+    console.log("error is"+data.error)
     const cards=[];
 
     for(var i=0;i<goals.length;i++){
@@ -193,14 +220,26 @@ class Goals extends React.Component {
               >
                 <TextField
                   autoFocus
+                  id="title"
                   margin="dense"
                   name="title"
                   label="Title"
+                  multiline
+                  variant="outlined"
+                  fullWidth
+                />
+                <TextField
+                  id="description"
+                  margin="dense"
+                  name="description"
+                  label="Description"
+                  multiline
+                  rows="4"
                   variant="outlined"
                   fullWidth
                 />
               <Button color="primary" type="submit">
-                Subscribe
+                Create
               </Button>
               </form>
             </DialogContent>

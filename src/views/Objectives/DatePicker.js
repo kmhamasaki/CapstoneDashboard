@@ -13,7 +13,6 @@ function DatePickerDemo(props) {
   const [selectedDate, handleDateChange] = useState(new Date(props.startDate));
 
   const [selectedDate2, handleDateChange2] = useState(new Date(props.dueDate));
-  console.log(props.startDate, props.endDate)
 
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -23,6 +22,7 @@ function DatePickerDemo(props) {
         variant="inline"
         inputVariant="outlined"
         label="Start Date"
+        name="startDate"
         format="MM/dd/yyyy"
         value={selectedDate}
         InputAdornmentProps={{ position: "end" }}
@@ -34,6 +34,7 @@ function DatePickerDemo(props) {
         variant="inline"
         inputVariant="outlined"
         label="Due Date"
+        name="dueDate"
         format="MM/dd/yyyy"
         value={selectedDate2}
         InputAdornmentProps={{ position: "end" }}

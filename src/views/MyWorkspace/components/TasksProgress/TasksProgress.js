@@ -74,12 +74,12 @@ const TasksProgress = props => {
             >
               {props.strategy.name}
             </Typography>
-            <Typography variant="h3">{props.strategy.progress}%</Typography>
+            <Typography variant="h3">{props.strategy.progress ? props.strategy.progress : 50}%</Typography>
           </Grid>
         </Grid>
         <LinearProgress
           className={classes.progress}
-          value={props.strategy.progress}
+          value={props.strategy.progress ? props.strategy.progress : 50}
           variant="determinate"
         />
       </CardContent>
