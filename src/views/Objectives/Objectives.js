@@ -29,7 +29,7 @@ import axios from 'axios';
 import { withRouter, useParams} from 'react-router-dom';
 import AddIcon from '@material-ui/icons/Add';
 import { withStyles } from '@material-ui/styles';
-import objectivesData from './ObjectivesList.js'
+import objectivesDataImport from './ObjectivesList.js'
 import ObjectiveRow from './ObjectiveRow.js'
 import DatePicker from './DatePicker.js'
 
@@ -128,11 +128,12 @@ class Objectives extends React.Component{
 
     console.log(classes);
 
-    console.log(objectivesData)
-
     // while(!isLoaded) {
     //   return <div>not here</div>
     // }
+
+    const objectivesData = objectivesDataImport;
+    // const objectivesData = this.state.data.objectives;
 
     const openAddEditor = () => {
       this.setState({

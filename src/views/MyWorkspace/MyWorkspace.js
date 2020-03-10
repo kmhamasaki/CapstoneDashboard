@@ -130,11 +130,10 @@ class MyWorkspace extends React.Component {
       this.setState({
         open: false
       });
-      const { title } = event.target.elements;
-      console.log(title[0].value);
-      console.log(title[1].value);
-      const name = title[0].value;
-      const description = title[1].value;
+      console.log(event.target.elements.title.value);
+      console.log(event.target.elements.description.value);
+      const name = event.target.elements.title.value;
+      const description = event.target.elements.description.value;
       axios({
       method: 'post',
         url: '/create_strategy',
@@ -194,7 +193,7 @@ class MyWorkspace extends React.Component {
               >
               <Card className={classes.cardRoot}>
                   <CardMedia className={classes.cardContent, classes.maxHeightWidth}>
-                    <Tooltip title="Add Strategy">
+                    <Tooltip arrow title="Add Strategy">
                       <Button
                         variant="contained"
                         color="default"
@@ -214,6 +213,7 @@ class MyWorkspace extends React.Component {
               sm={6}
               xs={12}
             >
+            {/*}
               <Card className={classes.cardRoot}>
                 <CardContent className={classes.cardContent}>
                   <Grid
@@ -238,6 +238,7 @@ class MyWorkspace extends React.Component {
                   </Grid>
                 </CardContent>
               </Card>
+            {*/}
             </Grid>
           </Grid>
           <Dialog open={this.state.open} onClose={handleClose} aria-labelledby="form-dialog-title">
@@ -258,7 +259,7 @@ class MyWorkspace extends React.Component {
                   fullWidth
                 />
                 <TextField
-                  id="title"
+                  id="description"
                   margin="dense"
                   name="description"
                   label="Description"
