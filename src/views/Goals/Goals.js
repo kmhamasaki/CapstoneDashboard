@@ -161,6 +161,8 @@ class Goals extends React.Component {
       }.bind(this));
     };
 
+    console.log(data);
+
     let goals = data.goals;
     console.log(goals)
     console.log("error is"+data.error)

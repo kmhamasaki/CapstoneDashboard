@@ -73,7 +73,8 @@ class Objectives extends React.Component{
       isLoaded: false,
       items: [],
       openEdit: false,
-      openAdd: false
+      openAdd: false,
+      deleteConfirm: false
     };
 
     // this is how you get the url parameter
@@ -81,6 +82,8 @@ class Objectives extends React.Component{
 
     this.openEditor = this.openEditor.bind(this);
     this.closeEditor = this.closeEditor.bind(this);
+    this.deleteObjective = this.deleteObjective.bind(this);
+    this.closeDeleteConfirm = this.closeDeleteConfirm.bind(this);
   }
 
   openEditor(objective){
@@ -92,7 +95,21 @@ class Objectives extends React.Component{
   }
   closeEditor(){
     this.setState({
-      openEdit: false,
+      openEdit: false
+    })
+  }
+
+  deleteObjective(objective){
+    console.log(objective)
+    console.log("deleted!")
+    this.setState({
+      deleteConfirm: true,
+      objective: objective
+    })
+  }
+  closeDeleteConfirm(){
+    this.setState({
+      deleteConfirm: false
     })
   }
 
@@ -126,8 +143,6 @@ class Objectives extends React.Component{
     const { error, isLoaded, data } = this.state;
     const { classes } = this.props;
 
-    console.log(classes);
-
     // while(!isLoaded) {
     //   return <div>not here</div>
     // }
@@ -155,7 +170,6 @@ class Objectives extends React.Component{
       event.preventDefault();
 
       let deets = event.target.elements;
-      console.log(deets);
       const objective = {
         objectiveId : this.state.objective.id,
         title: event.target.elements.title.value,
@@ -169,8 +183,15 @@ class Objectives extends React.Component{
       this.closeEditor()
     }
 
+    const deleteObjective = event => {
+      event.preventDefault();
+      console.log("delete!!!!!!");
+
+      this.closeDeleteConfirm();
+    }
+
     const ObjectiveRows = objectivesData.map(objective => (
-                        <ObjectiveRow objective={objective} openEditor={this.openEditor}/>
+                        <ObjectiveRow objective={objective} openEditor={this.openEditor} deleteObjective={this.deleteObjective}/>
                         ))
 
     return (
@@ -223,8 +244,8 @@ class Objectives extends React.Component{
           </Card>
         </div>
         </div>
-        <Dialog open={this.state.openEdit} onClose={this.closeEditor} aria-labelledby="form-dialog-title">
-              <DialogTitle id="form-dialog-title">Edit Objective</DialogTitle>
+        <Dialog open={this.state.openEdit} onClose={this.closeEditor} aria-labelledby="edit-objective">
+              <DialogTitle id="edit-objective">Edit Objective</DialogTitle>
               <DialogContent>
                 <form
                   id="editObjective"
@@ -269,8 +290,8 @@ class Objectives extends React.Component{
                 </form>
               </DialogContent>
         </Dialog>
-        <Dialog open={this.state.openAdd} onClose={closeAddEditor} aria-labelledby="form-dialog-title">
-              <DialogTitle id="form-dialog-title">Create New Objective</DialogTitle>
+        <Dialog open={this.state.openAdd} onClose={closeAddEditor} aria-labelledby="add-objective">
+              <DialogTitle id="add-objective">Create New Objective</DialogTitle>
               <DialogContent>
                 <form
                   id="addNewObjective"
@@ -310,6 +331,24 @@ class Objectives extends React.Component{
                 </Button>
                 </form>
               </DialogContent>
+        </Dialog>
+        <Dialog open={this.state.deleteConfirm} onClose={this.closeDeleteConfirm} aria-labelledby="delete-confirmation">
+          <DialogTitle id="delete-confirmation">Are you sure you want to delete objective?</DialogTitle>
+          <DialogContent>
+            <form
+              id="deleteObjective"
+              className={classes.form}
+              onSubmit={deleteObjective}
+            >
+
+            <Button color="primary" type="submit">
+              Delete
+            </Button>
+            <Button color="secondary" onClick={this.closeDeleteConfirm}>
+              Don't delete
+            </Button>
+            </form>
+          </DialogContent>
         </Dialog>
       </div>
     )

@@ -76,7 +76,7 @@ class ObjectiveRow extends React.Component{
 	          	<IconButton aria-label="edit" onClick={()=>this.props.openEditor(objective)}>
 				  <EditIcon />
 				</IconButton>
-				<IconButton aria-label="delete">
+				<IconButton aria-label="delete" onClick={()=>this.props.deleteObjective(objective)}>
 				  <DeleteIcon />
 				</IconButton>
 	          </TableCell>
