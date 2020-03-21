@@ -62,8 +62,6 @@ const classes = theme => ({
 });
 
 
-
-
 class Objectives extends React.Component{
   
   constructor(props) {
@@ -87,7 +85,6 @@ class Objectives extends React.Component{
     console.log(objective)
     this.setState({
       openEdit: true,
-      objective: objective
     })
   }
   closeEditor(){
@@ -96,29 +93,30 @@ class Objectives extends React.Component{
     })
   }
 
-  // componentWillMount() {
-  //   axios({
-  //     method: 'get',
-  //     url: 'http://localhost:4000/get_my_objectives',
-  //     data: {
-  //       userId: 1,
-  //       goalId: this.id
-  //     }
-  //   })
-  //   .catch(function (error) {
-  //   // handle error
-  //     alert(error);
-  //   })
-  //   .then(function (res) {
-  //     console.log(res);
-  //     let data = res.data;
-  //     this.setState({
-  //           isLoaded: true,
-  //           data: data
-  //         });
-  //   }.bind(this));
 
-  // };
+  componentWillMount() {
+    axios({
+      method: 'post',
+      url: 'http://localhost:4000/get_objectives',
+      data: {
+        userId: 1,
+        goalId: this.id
+      }
+    })
+    .catch(function (error) {
+    // handle error
+      alert(error);
+    })
+    .then(function (res) {
+      console.log(res);
+      let data = res.data;
+      this.setState({
+            isLoaded: true,
+            data: data
+          });
+    }.bind(this));
+
+  };
 
 
 
@@ -128,12 +126,12 @@ class Objectives extends React.Component{
 
     console.log(classes);
 
-    // while(!isLoaded) {
-    //   return <div>not here</div>
-    // }
+    while(!isLoaded) {
+      return <div>not here</div>
+    }
 
-    const objectivesData = objectivesDataImport;
-    // const objectivesData = this.state.data.objectives;
+    //const objectivesData = objectivesDataImport;
+    const objectivesData = data.objectives;
 
     const openAddEditor = () => {
       this.setState({
@@ -148,8 +146,39 @@ class Objectives extends React.Component{
     };
 
     const addNewObjective = event => {
-      console.log("new!")
-    }
+      axios({
+      method: 'post',
+        url: '/create_objective',
+        data: {
+          name: event.target.elements.title.value,
+          goalId: this.goalId,
+          tags: event.target.elements.tags.value,
+          assignedUsers: event.target.elements.people.value,
+
+        }
+      })
+      .catch(function (error) {
+      // handle error
+        alert(error);
+      })
+      .then(function (res) {
+        console.log(res);
+        let responseData = res.data;
+        let newStrategy = {
+          strategyId : responseData.strategyId,
+          name : event.target.elements.title.value,
+          goals : [],
+        }
+        data.strategies.push(newStrategy);
+        // setting the state "refreshes the page"
+        // when you set state, it calls render() again
+        this.setState({
+            isLoaded: true,
+            data: data
+          });
+      }.bind(this));
+
+    };
 
     const editObjective = event => {
       event.preventDefault();

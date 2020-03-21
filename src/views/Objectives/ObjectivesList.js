@@ -14,7 +14,7 @@ const objectives = [
   dueDate: "2/30/20",
   people: "Kristyn",
   tags: "Tag 1",
-  completion: "Done",
+  completion: "Not Started",
   id: 1,
 },
 {
@@ -23,7 +23,7 @@ const objectives = [
   dueDate: "2/3/20",
   people: "Kristyn",
   tags: "Tag 1",
-  completion: "Done",
+  completion: "Not Started",
   id: 2,
 },
 {
@@ -41,7 +41,7 @@ const objectives = [
   dueDate: "9/21/20",
   people: "Kristyn",
   tags: "Tag 1",
-  completion: "Done",
+  completion: "In Progress",
   id: 4,
 }
 ];

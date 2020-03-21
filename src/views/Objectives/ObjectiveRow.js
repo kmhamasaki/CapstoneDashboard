@@ -37,6 +37,9 @@ class ObjectiveRow extends React.Component{
 			open: false
 		}
 	}
+    onProgressClick = (objective) => {
+    	console.log(objective);
+    }
 
 	render(){
 		const openEditor = () => {
@@ -52,6 +55,18 @@ class ObjectiveRow extends React.Component{
 		};
 
 		const objective = this.props.objective
+
+		let color = "white";
+		switch(objective.completion) {
+		  case "Done":
+		    color = "green";
+		    break;
+		  case "In Progress":
+		    color = "yellow";
+		    break;
+		  case "Not Started":
+		    color = "red";
+		}
 		return(
 			<TableRow
 	          hover
@@ -67,7 +82,12 @@ class ObjectiveRow extends React.Component{
 	          <TableCell>{objective.people}</TableCell>
 	          <TableCell>{objective.tags}</TableCell>
 	          <TableCell>
-	            {objective.completion}
+	          	<Button
+	          		style={{color: color}}
+	          		onClick = {() => this.onProgressClick(objective)}
+	          	>
+	            	{objective.completion}
+	            </Button>
 	          </TableCell>
 	          <TableCell
 	          	align="right"
