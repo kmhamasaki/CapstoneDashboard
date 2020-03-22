@@ -45,6 +45,7 @@ const TasksProgress = props => {
   const { className, history, ...rest } = props;
 
   const classes = useStyles();
+  console.log(props.strategy);
   
   return (
     <Grid
@@ -74,12 +75,12 @@ const TasksProgress = props => {
             >
               {props.strategy.name}
             </Typography>
-            <Typography variant="h3">{props.strategy.progress ? props.strategy.progress : 50}%</Typography>
+            <Typography variant="h3">{props.strategy.completion ? props.strategy.completion : 0}%</Typography>
           </Grid>
         </Grid>
         <LinearProgress
           className={classes.progress}
-          value={props.strategy.progress ? props.strategy.progress : 50}
+          value={props.strategy.completion ? props.strategy.completion : 0}
           variant="determinate"
         />
       </CardContent>
