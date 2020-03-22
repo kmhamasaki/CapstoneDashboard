@@ -180,14 +180,20 @@ class Objectives extends React.Component{
       .then(function (res) {
         console.log(res);
         let responseData = res.data;
-        // let newStrategy = {
-        //   strategyId : responseData.strategyId,
-        //   name : event.target.elements.title.value,
-        //   goals : [],
-        // }
-        // data.strategies.push(newStrategy);
-        // setting the state "refreshes the page"
-        // when you set state, it calls render() again
+        let newObjective = {
+          goalId : myData.goalId,
+          name : myData.name,
+          objectiveId: responseData.objectiveId,
+          tags: myData.tags,
+          assignedUser: myData.assignedUsers,
+          startDate: myData.startDate,
+          endDate: myData.endDate,
+          status: 0
+        }
+        console.log(data);
+        data.objectives.push(newObjective);
+        //setting the state "refreshes the page"
+        //when you set state, it calls render() again
         this.setState({
             isLoaded: true,
             data: data

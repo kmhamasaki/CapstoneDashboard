@@ -33,12 +33,46 @@ import objectivesData from './ObjectivesList.js'
 class ObjectiveRow extends React.Component{
 	constructor(props){
 		super(props)
+		let mystatus = props.objective.status;
+		console.log(props)
 		this.state = {
-			open: false
+			open: false,
+			status: mystatus
 		}
 	}
     onProgressClick = (objective) => {
-    	console.log(objective);
+    	let newStatus = 0;
+    	switch(this.state.status) {
+		  case 0:
+		    newStatus = 1;
+		    break;
+		  case 1:
+		    newStatus = 2;
+		    break;
+		  case 2:
+		    newStatus = 0;
+		}
+		let objectiveId = objective.objectiveId;
+    	axios({
+	      method: 'post',
+	      url: 'http://localhost:4000/update_objective_status',
+	      data: {
+	        objectiveId: objectiveId,
+	        status: newStatus
+	      }
+	    })
+	    .catch(function (error) {
+	    // handle error
+	      alert(error);
+	    })
+	    .then(function (res) {
+	      console.log(res);
+	      let data = res.data;
+	      console.log(data);
+	      this.setState({
+	            status: newStatus
+	          });
+	    }.bind(this));
     }
 
 	render(){
@@ -58,7 +92,8 @@ class ObjectiveRow extends React.Component{
 
 		let color = "white";
 		let completionText = "";
-		switch(objective.status) {
+		let status = this.state.status;
+		switch(status) {
 		  case 0:
 		    color = "red";
 		    completionText = "Not Started";
