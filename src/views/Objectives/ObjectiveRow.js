@@ -33,16 +33,55 @@ import objectivesData from './ObjectivesList.js'
 class ObjectiveRow extends React.Component{
 	constructor(props){
 		super(props)
+		let mystatus = props.objective.status;
+		console.log(props)
 		this.state = {
-			open: false
+			open: false,
+			status: mystatus
 		}
 	}
+    onProgressClick = (objective) => {
+    	let newStatus = 0;
+    	switch(this.state.status) {
+		  case 0:
+		    newStatus = 1;
+		    break;
+		  case 1:
+		    newStatus = 2;
+		    break;
+		  case 2:
+		    newStatus = 0;
+		}
+		let objectiveId = objective.objectiveId;
+    	axios({
+	      method: 'post',
+	      url: 'http://localhost:4000/update_objective_status',
+	      data: {
+	        objectiveId: objectiveId,
+	        status: newStatus
+	      }
+	    })
+	    .catch(function (error) {
+	    // handle error
+	      alert(error);
+	    })
+	    .then(function (res) {
+	      console.log(res);
+	      let data = res.data;
+	      console.log(data);
+	      this.setState({
+	            status: newStatus
+	          });
+	    }.bind(this));
+    }
 
 	render(){
-		const openEditor = () => {
+		const openEditor = (objective) => {
 		  this.setState({
-		    open: true
+		    open: true,
+		    objective: objective
 		  });
+		  console.log(this.state.objective);
 		};
 
 		const closeEditor = () => {
@@ -52,22 +91,44 @@ class ObjectiveRow extends React.Component{
 		};
 
 		const objective = this.props.objective
+
+		let color = "white";
+		let completionText = "";
+		let status = this.state.status;
+		switch(status) {
+		  case 0:
+		    color = "red";
+		    completionText = "Not Started";
+		    break;
+		  case 1:
+		    color = "yellow";
+		    completionText = "In Progress";
+		    break;
+		  case 2:
+		    color = "green";
+		    completionText = "Done"
+		}
 		return(
 			<TableRow
 	          hover
 	          key={objective.id}
 	        >
 	          <TableCell>
-	            {objective.title}
+	            {objective.name}
 	          </TableCell>
 	          <TableCell>{objective.startDate}</TableCell>
 	          <TableCell>
-	            {objective.dueDate}
+	            {objective.endDate}
 	          </TableCell>
-	          <TableCell>{objective.people}</TableCell>
+	          <TableCell>{objective.assignedUser}</TableCell>
 	          <TableCell>{objective.tags}</TableCell>
 	          <TableCell>
-	            {objective.completion}
+	          	<Button
+	          		style={{color: color}}
+	          		onClick = {() => this.onProgressClick(objective)}
+	          	>
+	            	{completionText}
+	            </Button>
 	          </TableCell>
 	          <TableCell
 	          	align="right"

@@ -127,11 +127,12 @@ class Goals extends React.Component {
       console.log(name)
       const description = event.target.elements.description.value;
       console.log(description)
+      console.log(this.strategyId)
       axios({
       method: 'post',
         url: '/create_goal',
         data: {
-          strategyId: this.state.strategyId,
+          strategyId: this.strategyId,
           name: name,
           description: description,
           startDate: "01/01/2020",

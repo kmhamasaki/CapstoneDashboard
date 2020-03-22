@@ -62,8 +62,6 @@ const classes = theme => ({
 });
 
 
-
-
 class Objectives extends React.Component{
   
   constructor(props) {
@@ -92,6 +90,36 @@ class Objectives extends React.Component{
       openEdit: true,
       objective: objective
     })
+    console.log(this.state.objective);
+
+  }
+
+  deleteObjective(objective) {
+    console.log(objective);
+    axios({
+      method: 'post',
+      url: 'http://localhost:4000/delete_objective',
+      data: {
+        objectiveId: objective.objectiveId
+      }
+    })
+    .catch(function (error) {
+      alert(error);
+    })
+    .then(function (res) {
+      console.log(res);
+      let data = res.data;
+      console.log(data);
+      let newData = this.state.data;
+      console.log(newData);
+      let objIndex = newData.objectives.findIndex((obj => obj.objectiveId == objective.objectiveId));
+      newData.objectives.splice(objIndex, 1);
+
+      this.setState({
+            isLoaded: true,
+            data: newData
+          });
+    }.bind(this));
   }
   closeEditor(){
     this.setState({
@@ -113,29 +141,31 @@ class Objectives extends React.Component{
     })
   }
 
-  // componentWillMount() {
-  //   axios({
-  //     method: 'get',
-  //     url: 'http://localhost:4000/get_my_objectives',
-  //     data: {
-  //       userId: 1,
-  //       goalId: this.id
-  //     }
-  //   })
-  //   .catch(function (error) {
-  //   // handle error
-  //     alert(error);
-  //   })
-  //   .then(function (res) {
-  //     console.log(res);
-  //     let data = res.data;
-  //     this.setState({
-  //           isLoaded: true,
-  //           data: data
-  //         });
-  //   }.bind(this));
 
-  // };
+  componentWillMount() {
+    axios({
+      method: 'post',
+      url: 'http://localhost:4000/get_objectives',
+      data: {
+        userId: 1,
+        goalId: this.goalId
+      }
+    })
+    .catch(function (error) {
+    // handle error
+      alert(error);
+    })
+    .then(function (res) {
+      console.log(res);
+      let data = res.data;
+      console.log(data);
+      this.setState({
+            isLoaded: true,
+            data: data
+          });
+    }.bind(this));
+
+  };
 
 
 
@@ -146,9 +176,14 @@ class Objectives extends React.Component{
     // while(!isLoaded) {
     //   return <div>not here</div>
     // }
+    console.log(classes);
 
-    const objectivesData = objectivesDataImport;
-    // const objectivesData = this.state.data.objectives;
+    while(!isLoaded) {
+      return <div>not here</div>
+    }
+
+    //const objectivesData = objectivesDataImport;
+    const objectivesData = data.objectives;
 
     const openAddEditor = () => {
       this.setState({
@@ -163,23 +198,101 @@ class Objectives extends React.Component{
     };
 
     const addNewObjective = event => {
-      console.log("new!")
-    }
+      event.preventDefault();
+      this.setState({
+        openAdd: false
+      });
+      let myData = {
+          name: event.target.elements.title.value,
+          goalId: this.goalId,
+          tags: event.target.elements.tags.value,
+          assignedUsers: event.target.elements.people.value,
+          startDate: event.target.elements.startDate.value,
+          endDate: event.target.elements.dueDate.value,
+      }
+      console.log(myData);
+      axios({
+      method: 'post',
+        url: '/create_objective',
+        data:  {
+          name: event.target.elements.title.value,
+          goalId: this.goalId,
+          tags: event.target.elements.tags.value,
+          assignedUser: event.target.elements.people.value,
+          startDate: event.target.elements.startDate.value,
+          endDate: event.target.elements.dueDate.value,
+          description: "asdfas"
+      }
+      })
+      .catch(function (error) {
+      // handle error
+        alert(error);
+      })
+      .then(function (res) {
+        console.log(res);
+        let responseData = res.data;
+        let newObjective = {
+          goalId : myData.goalId,
+          name : myData.name,
+          objectiveId: responseData.objectiveId,
+          tags: myData.tags,
+          assignedUser: myData.assignedUsers,
+          startDate: myData.startDate,
+          endDate: myData.endDate,
+          status: 0
+        }
+        console.log(data);
+        data.objectives.push(newObjective);
+        //setting the state "refreshes the page"
+        //when you set state, it calls render() again
+        this.setState({
+            isLoaded: true,
+            data: data
+          });
+      }.bind(this));
+
+    };
 
     const editObjective = event => {
       event.preventDefault();
 
       let deets = event.target.elements;
       const objective = {
-        objectiveId : this.state.objective.id,
-        title: event.target.elements.title.value,
+        objectiveId : this.state.objective.objectiveId,
+        name: event.target.elements.title.value,
         startDate: event.target.elements.startDate.value,
-        dueDate: event.target.elements.dueDate.value,
-        people: event.target.elements.people.value,
+        endDate: event.target.elements.dueDate.value,
         tags: event.target.elements.tags.value,
-        completion: "Done"
+        assignedUser: event.target.elements.people.value,
+        status: this.state.objective.status,
+        goalId: this.state.objective.goalId,
+        description: "fsdf",
       }
       console.log(objective)
+      axios({
+        method: 'post',
+        url: 'http://localhost:4000/update_objective',
+        data: objective
+      })
+      .catch(function (error) {
+      // handle error
+        alert(error);
+      })
+      .then(function (res) {
+        console.log(res);
+        let resdata = res.data;
+        console.log(resdata);
+
+        let newData = this.state.data;
+        console.log(newData);
+        let objIndex = newData.objectives.findIndex((obj => obj.objectiveId == objective.objectiveId));
+
+        newData.objectives[objIndex] = objective;
+        this.setState({
+              isLoaded: true,
+              data: newData
+            });
+      }.bind(this));
       this.closeEditor()
     }
 
@@ -259,11 +372,11 @@ class Objectives extends React.Component{
                     label="Title"
                     multiline
                     variant="outlined"
-                    defaultValue={this.state.objective ? this.state.objective.title : ""}
+                    defaultValue={this.state.objective ? this.state.objective.name : ""}
                     fullWidth
                   />
                   <DatePicker startDate={this.state.objective ? this.state.objective.startDate : ""}
-                  dueDate={this.state.objective ? this.state.objective.dueDate : ""}/>
+                  dueDate={this.state.objective ? this.state.objective.endDate : ""}/>
                   <TextField
                     id="people"
                     margin="dense"
@@ -271,7 +384,7 @@ class Objectives extends React.Component{
                     label="People"
                     multiline
                     variant="outlined"
-                    defaultValue={this.state.objective ? this.state.objective.people : ""}
+                    defaultValue={this.state.objective ? this.state.objective.assignedUser : ""}
                     fullWidth
                   />
                   <TextField

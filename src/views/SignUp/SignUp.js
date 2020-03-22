@@ -16,6 +16,7 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import {fire, loggedIn} from '../../config/Fire';
 import firebase from 'firebase';
 import {authenticated} from 'App'
+import axios from 'axios';
 
 const schema = {
   firstName: {
@@ -38,6 +39,12 @@ const schema = {
     }
   },
   password: {
+    presence: { allowEmpty: false, message: 'is required' },
+    length: {
+      maximum: 128
+    }
+  },
+  workspace: {
     presence: { allowEmpty: false, message: 'is required' },
     length: {
       maximum: 128
@@ -149,17 +156,49 @@ const SignUp = props => {
     history.goBack();
   };
 
+  async function checkWorkspacePassword(event) {
+    const { firstName, lastName, email, password, workspace } = event.target.elements;
+    axios({
+      method: 'post',
+      url: 'http://localhost:4000/add_user',
+      data: {
+        fname: firstName.value,
+        lname: lastName.value,
+        email: email.value,
+        workspacePassword: workspace.value
+      }
+    })
+    .then(async (res) => {
+      console.log("here");
+      console.log(res.data);
+      let {success, error }= res.data;
+      console.log(success);
+      if(success == true) {
+        await fire.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+          .then(function() {
+            fire
+            .auth()
+            .createUserWithEmailAndPassword(email.value, password.value).then(() => {
+              localStorage.setItem(loggedIn, true);
+              history.push('/my-workspace');
+            }).catch(error => {
+              alert(error);
+            });
+          })
+      } else {
+        alert("Error: " + error);
+      }
+    }).catch(function (error) {
+    // handle error
+      alert(error);
+    })
+  }
+
   const handleSignUp = useCallback(async event => {
     event.preventDefault();
     const { email, password } = event.target.elements;
     try {
-      await fire.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
-      .then(function() {
-        fire
-        .auth()
-        .createUserWithEmailAndPassword(email.value, password.value);
-        localStorage.setItem(loggedIn, true);
-      })
+       checkWorkspacePassword(event);
     } catch (error) {
       alert(error);
     }
@@ -242,6 +281,20 @@ const SignUp = props => {
                 onChange={handleChange}
                 type="password"
                 value={formState.values.password || ''}
+                variant="outlined"
+              />
+              <TextField
+                className={classes.textField}
+                error={hasError('workspace')}
+                fullWidth
+                helperText={
+                  hasError('workspace') ? formState.errors.workspace[0] : null
+                }
+                label="Workspace Password"
+                name="workspace"
+                onChange={handleChange}
+                type="password"
+                value={formState.values.workspace || ''}
                 variant="outlined"
               />
               <Button

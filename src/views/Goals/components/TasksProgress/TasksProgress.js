@@ -35,7 +35,7 @@ const useStyles = makeStyles(theme => ({
     width: 32
   },
   progress: {
-    marginTop: theme.spacing(3)
+    marginTop: theme.spacing(3),
   }
 }));
 
@@ -45,7 +45,7 @@ const TasksProgress = props => {
   const { className, history, ...rest } = props;
 
   const classes = useStyles();
-
+  console.log(props.goal)
   return (
     <Grid
           item
@@ -54,7 +54,7 @@ const TasksProgress = props => {
           xl={4}
           xs={12}
         >
-        <div style={{ cursor: 'pointer' }} onClick={() => history.push('/objectives/'+props.goal.id)}>
+        <div style={{ cursor: 'pointer' }} onClick={() => history.push('/objectives/'+props.goal.goalId)}>
 
     <Card
       {...rest}
@@ -81,6 +81,7 @@ const TasksProgress = props => {
           className={classes.progress}
           value={props.goal.progress}
           variant="determinate"
+          color="secondary"
         />
       </CardContent>
     </Card>
