@@ -76,10 +76,12 @@ class ObjectiveRow extends React.Component{
     }
 
 	render(){
-		const openEditor = () => {
+		const openEditor = (objective) => {
 		  this.setState({
-		    open: true
+		    open: true,
+		    objective: objective
 		  });
+		  console.log(this.state.objective);
 		};
 
 		const closeEditor = () => {
@@ -135,7 +137,7 @@ class ObjectiveRow extends React.Component{
 	          	<IconButton aria-label="edit" onClick={()=>this.props.openEditor(objective)}>
 				  <EditIcon />
 				</IconButton>
-				<IconButton aria-label="delete">
+				<IconButton aria-label="delete" onClick={()=>this.props.deleteObjective(objective)}>
 				  <DeleteIcon />
 				</IconButton>
 	          </TableCell>
