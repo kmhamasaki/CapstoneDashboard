@@ -71,7 +71,8 @@ class Objectives extends React.Component{
       isLoaded: false,
       items: [],
       openEdit: false,
-      openAdd: false
+      openAdd: false,
+      deleteConfirm: false
     };
 
     // this is how you get the url parameter
@@ -80,6 +81,7 @@ class Objectives extends React.Component{
     this.openEditor = this.openEditor.bind(this);
     this.closeEditor = this.closeEditor.bind(this);
     this.deleteObjective = this.deleteObjective.bind(this);
+    this.closeDeleteConfirm = this.closeDeleteConfirm.bind(this);
   }
 
   openEditor(objective){
@@ -89,39 +91,27 @@ class Objectives extends React.Component{
       objective: objective
     })
     console.log(this.state.objective);
-
   }
 
-  deleteObjective(objective) {
-    console.log(objective);
-    axios({
-      method: 'post',
-      url: 'http://localhost:4000/delete_objective',
-      data: {
-        objectiveId: objective.objectiveId
-      }
-    })
-    .catch(function (error) {
-      alert(error);
-    })
-    .then(function (res) {
-      console.log(res);
-      let data = res.data;
-      console.log(data);
-      let newData = this.state.data;
-      console.log(newData);
-      let objIndex = newData.objectives.findIndex((obj => obj.objectiveId == objective.objectiveId));
-      newData.objectives.splice(objIndex, 1);
-
-      this.setState({
-            isLoaded: true,
-            data: newData
-          });
-    }.bind(this));
-  }
   closeEditor(){
     this.setState({
       openEdit: false,
+      objective: null
+    })
+  }
+
+  deleteObjective(objective){
+    console.log(objective)
+    console.log("deleted!")
+    this.setState({
+      deleteConfirm: true,
+      objective: objective
+    })
+  }
+  closeDeleteConfirm(){
+    this.setState({
+      deleteConfirm: false,
+      objective: null
     })
   }
 
@@ -157,6 +147,9 @@ class Objectives extends React.Component{
     const { error, isLoaded, data } = this.state;
     const { classes } = this.props;
 
+    // while(!isLoaded) {
+    //   return <div>not here</div>
+    // }
     console.log(classes);
 
     while(!isLoaded) {
@@ -238,7 +231,6 @@ class Objectives extends React.Component{
       event.preventDefault();
 
       let deets = event.target.elements;
-      console.log(deets);
       const objective = {
         objectiveId : this.state.objective.objectiveId,
         name: event.target.elements.title.value,
@@ -278,9 +270,42 @@ class Objectives extends React.Component{
       this.closeEditor()
     }
 
+    const actuallyDeleteObjective = event => {
+      event.preventDefault();
+      console.log("delete!!!!!!");
+
+      const objective = this.state.objective;
+      console.log(objective);
+      axios({
+        method: 'post',
+        url: 'http://localhost:4000/delete_objective',
+        data: {
+          objectiveId: objective.objectiveId
+        }
+      })
+      .catch(function (error) {
+        alert(error);
+      })
+      .then(function (res) {
+        console.log(res);
+        let data = res.data;
+        console.log(data);
+        let newData = this.state.data;
+        console.log(newData);
+        let objIndex = newData.objectives.findIndex((obj => obj.objectiveId == objective.objectiveId));
+        newData.objectives.splice(objIndex, 1);
+
+        this.setState({
+              isLoaded: true,
+              data: newData
+            });
+      }.bind(this));
+
+      this.closeDeleteConfirm();
+    }
+
     const ObjectiveRows = objectivesData.map(objective => (
-                        <ObjectiveRow objective={objective} openEditor={this.openEditor} 
-                          deleteObjective={this.deleteObjective} />
+                        <ObjectiveRow objective={objective} openEditor={this.openEditor} deleteObjective={this.deleteObjective}/>
                         ))
 
     return (
@@ -333,8 +358,8 @@ class Objectives extends React.Component{
           </Card>
         </div>
         </div>
-        <Dialog open={this.state.openEdit} onClose={this.closeEditor} aria-labelledby="form-dialog-title">
-              <DialogTitle id="form-dialog-title">Edit Objective</DialogTitle>
+        <Dialog open={this.state.openEdit} onClose={this.closeEditor} aria-labelledby="edit-objective">
+              <DialogTitle id="edit-objective">Edit Objective</DialogTitle>
               <DialogContent>
                 <form
                   id="editObjective"
@@ -379,8 +404,8 @@ class Objectives extends React.Component{
                 </form>
               </DialogContent>
         </Dialog>
-        <Dialog open={this.state.openAdd} onClose={closeAddEditor} aria-labelledby="form-dialog-title">
-              <DialogTitle id="form-dialog-title">Create New Objective</DialogTitle>
+        <Dialog open={this.state.openAdd} onClose={closeAddEditor} aria-labelledby="add-objective">
+              <DialogTitle id="add-objective">Create New Objective</DialogTitle>
               <DialogContent>
                 <form
                   id="addNewObjective"
@@ -420,6 +445,24 @@ class Objectives extends React.Component{
                 </Button>
                 </form>
               </DialogContent>
+        </Dialog>
+        <Dialog open={this.state.deleteConfirm} onClose={this.closeDeleteConfirm} aria-labelledby="delete-confirmation">
+          <DialogTitle id="delete-confirmation">Are you sure you want to delete objective?</DialogTitle>
+          <DialogContent>
+            <form
+              id="deleteObjective"
+              className={classes.form}
+              onSubmit={actuallyDeleteObjective}
+            >
+
+            <Button color="primary" type="submit">
+              Delete
+            </Button>
+            <Button color="secondary" onClick={this.closeDeleteConfirm}>
+              Don't delete
+            </Button>
+            </form>
+          </DialogContent>
         </Dialog>
       </div>
     )
