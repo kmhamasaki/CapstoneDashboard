@@ -100,7 +100,7 @@ class Objectives extends React.Component{
       url: 'http://localhost:4000/get_objectives',
       data: {
         userId: 1,
-        goalId: this.id
+        goalId: this.goalId
       }
     })
     .catch(function (error) {
@@ -110,6 +110,7 @@ class Objectives extends React.Component{
     .then(function (res) {
       console.log(res);
       let data = res.data;
+      console.log(data);
       this.setState({
             isLoaded: true,
             data: data
@@ -146,16 +147,31 @@ class Objectives extends React.Component{
     };
 
     const addNewObjective = event => {
-      axios({
-      method: 'post',
-        url: '/create_objective',
-        data: {
+      event.preventDefault();
+      this.setState({
+        openAdd: false
+      });
+      let myData = {
           name: event.target.elements.title.value,
           goalId: this.goalId,
           tags: event.target.elements.tags.value,
           assignedUsers: event.target.elements.people.value,
-
-        }
+          startDate: event.target.elements.startDate.value,
+          endDate: event.target.elements.dueDate.value,
+      }
+      console.log(myData);
+      axios({
+      method: 'post',
+        url: '/create_objective',
+        data:  {
+          name: event.target.elements.title.value,
+          goalId: this.goalId,
+          tags: event.target.elements.tags.value,
+          assignedUser: event.target.elements.people.value,
+          startDate: event.target.elements.startDate.value,
+          endDate: event.target.elements.dueDate.value,
+          description: "asdfas"
+      }
       })
       .catch(function (error) {
       // handle error
@@ -164,12 +180,12 @@ class Objectives extends React.Component{
       .then(function (res) {
         console.log(res);
         let responseData = res.data;
-        let newStrategy = {
-          strategyId : responseData.strategyId,
-          name : event.target.elements.title.value,
-          goals : [],
-        }
-        data.strategies.push(newStrategy);
+        // let newStrategy = {
+        //   strategyId : responseData.strategyId,
+        //   name : event.target.elements.title.value,
+        //   goals : [],
+        // }
+        // data.strategies.push(newStrategy);
         // setting the state "refreshes the page"
         // when you set state, it calls render() again
         this.setState({

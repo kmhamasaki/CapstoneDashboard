@@ -57,15 +57,19 @@ class ObjectiveRow extends React.Component{
 		const objective = this.props.objective
 
 		let color = "white";
-		switch(objective.completion) {
-		  case "Done":
-		    color = "green";
-		    break;
-		  case "In Progress":
-		    color = "yellow";
-		    break;
-		  case "Not Started":
+		let completionText = "";
+		switch(objective.status) {
+		  case 0:
 		    color = "red";
+		    completionText = "Not Started";
+		    break;
+		  case 1:
+		    color = "yellow";
+		    completionText = "In Progress";
+		    break;
+		  case 2:
+		    color = "green";
+		    completionText = "Done"
 		}
 		return(
 			<TableRow
@@ -73,20 +77,20 @@ class ObjectiveRow extends React.Component{
 	          key={objective.id}
 	        >
 	          <TableCell>
-	            {objective.title}
+	            {objective.name}
 	          </TableCell>
 	          <TableCell>{objective.startDate}</TableCell>
 	          <TableCell>
-	            {objective.dueDate}
+	            {objective.endDate}
 	          </TableCell>
-	          <TableCell>{objective.people}</TableCell>
+	          <TableCell>{objective.assignedUser}</TableCell>
 	          <TableCell>{objective.tags}</TableCell>
 	          <TableCell>
 	          	<Button
 	          		style={{color: color}}
 	          		onClick = {() => this.onProgressClick(objective)}
 	          	>
-	            	{objective.completion}
+	            	{completionText}
 	            </Button>
 	          </TableCell>
 	          <TableCell
