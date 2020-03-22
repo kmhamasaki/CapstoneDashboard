@@ -91,39 +91,12 @@ class Objectives extends React.Component{
       objective: objective
     })
     console.log(this.state.objective);
-
   }
 
-  deleteObjective(objective) {
-    console.log(objective);
-    axios({
-      method: 'post',
-      url: 'http://localhost:4000/delete_objective',
-      data: {
-        objectiveId: objective.objectiveId
-      }
-    })
-    .catch(function (error) {
-      alert(error);
-    })
-    .then(function (res) {
-      console.log(res);
-      let data = res.data;
-      console.log(data);
-      let newData = this.state.data;
-      console.log(newData);
-      let objIndex = newData.objectives.findIndex((obj => obj.objectiveId == objective.objectiveId));
-      newData.objectives.splice(objIndex, 1);
-
-      this.setState({
-            isLoaded: true,
-            data: newData
-          });
-    }.bind(this));
-  }
   closeEditor(){
     this.setState({
-      openEdit: false
+      openEdit: false,
+      objective: null
     })
   }
 
@@ -137,7 +110,8 @@ class Objectives extends React.Component{
   }
   closeDeleteConfirm(){
     this.setState({
-      deleteConfirm: false
+      deleteConfirm: false,
+      objective: null
     })
   }
 
@@ -296,9 +270,36 @@ class Objectives extends React.Component{
       this.closeEditor()
     }
 
-    const deleteObjective = event => {
+    const actuallyDeleteObjective = event => {
       event.preventDefault();
       console.log("delete!!!!!!");
+
+      const objective = this.state.objective;
+      console.log(objective);
+      axios({
+        method: 'post',
+        url: 'http://localhost:4000/delete_objective',
+        data: {
+          objectiveId: objective.objectiveId
+        }
+      })
+      .catch(function (error) {
+        alert(error);
+      })
+      .then(function (res) {
+        console.log(res);
+        let data = res.data;
+        console.log(data);
+        let newData = this.state.data;
+        console.log(newData);
+        let objIndex = newData.objectives.findIndex((obj => obj.objectiveId == objective.objectiveId));
+        newData.objectives.splice(objIndex, 1);
+
+        this.setState({
+              isLoaded: true,
+              data: newData
+            });
+      }.bind(this));
 
       this.closeDeleteConfirm();
     }
@@ -451,7 +452,7 @@ class Objectives extends React.Component{
             <form
               id="deleteObjective"
               className={classes.form}
-              onSubmit={deleteObjective}
+              onSubmit={actuallyDeleteObjective}
             >
 
             <Button color="primary" type="submit">
