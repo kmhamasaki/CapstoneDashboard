@@ -34,11 +34,6 @@ class ObjectiveRow extends React.Component{
 	constructor(props){
 		super(props)
 		let mystatus = props.objective.status;
-		console.log(props)
-		this.state = {
-			open: false,
-			status: mystatus
-		}
 	}
     onProgressClick = (objective) => {
     	let newStatus = 0;
@@ -76,36 +71,23 @@ class ObjectiveRow extends React.Component{
     }
 
 	render(){
-		const openEditor = (objective) => {
-		  this.setState({
-		    open: true,
-		    objective: objective
-		  });
-		  console.log(this.state.objective);
-		};
-
-		const closeEditor = () => {
-		  this.setState({
-		    open: false
-		  });
-		};
 
 		const objective = this.props.objective
 
 		let color = "white";
 		let completionText = "";
-		let status = this.state.status;
+		let status = objective.status;
 		switch(status) {
 		  case 0:
-		    color = "red";
+		    color = "firebrick";
 		    completionText = "Not Started";
 		    break;
 		  case 1:
-		    color = "yellow";
+		    color = "goldenrod";
 		    completionText = "In Progress";
 		    break;
 		  case 2:
-		    color = "green";
+		    color = "seagreen";
 		    completionText = "Done"
 		}
 		return(
@@ -125,7 +107,7 @@ class ObjectiveRow extends React.Component{
 	          <TableCell>
 	          	<Button
 	          		style={{color: color}}
-	          		onClick = {() => this.onProgressClick(objective)}
+	          		onClick = {() => this.props.toggleStatus(objective)}
 	          	>
 	            	{completionText}
 	            </Button>

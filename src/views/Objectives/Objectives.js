@@ -20,6 +20,7 @@ import {
   TableHead,
   TablePagination,
   TableRow,
+  TableSortLabel,
   TextField,
   Tooltip,
   Typography
@@ -61,7 +62,6 @@ const classes = theme => ({
   }
 });
 
-
 class Objectives extends React.Component{
   
   constructor(props) {
@@ -72,7 +72,9 @@ class Objectives extends React.Component{
       items: [],
       openEdit: false,
       openAdd: false,
-      deleteConfirm: false
+      deleteConfirm: false,
+      direction: 'asc',
+      sortField: 'status'
     };
 
     // this is how you get the url parameter
@@ -82,15 +84,14 @@ class Objectives extends React.Component{
     this.closeEditor = this.closeEditor.bind(this);
     this.deleteObjective = this.deleteObjective.bind(this);
     this.closeDeleteConfirm = this.closeDeleteConfirm.bind(this);
+    this.toggleStatus = this.toggleStatus.bind(this)
   }
 
   openEditor(objective){
-    console.log(objective)
     this.setState({
       openEdit: true,
       objective: objective
     })
-    console.log(this.state.objective);
   }
 
   closeEditor(){
@@ -101,18 +102,57 @@ class Objectives extends React.Component{
   }
 
   deleteObjective(objective){
-    console.log(objective)
-    console.log("deleted!")
     this.setState({
       deleteConfirm: true,
       objective: objective
     })
   }
+
   closeDeleteConfirm(){
     this.setState({
       deleteConfirm: false,
       objective: null
     })
+  }
+
+  toggleStatus(objective){
+    let newStatus = 0;
+      switch(objective.status) {
+      case 0:
+        newStatus = 1;
+        break;
+      case 1:
+        newStatus = 2;
+        break;
+      case 2:
+        newStatus = 0;
+    }
+    let objectiveId = objective.objectiveId;
+      axios({
+        method: 'post',
+        url: 'http://localhost:4000/update_objective_status',
+        data: {
+          objectiveId: objectiveId,
+          status: newStatus
+        }
+      })
+      .catch(function (error) {
+      // handle error
+        alert(error);
+      })
+      .then(function (res) {
+        console.log(res);
+        let data = res.data;
+        console.log(data);
+        let newData = this.state.data;
+        let objIndex = newData.objectives.findIndex((obj => obj.objectiveId == objective.objectiveId));
+        newData.objectives[objIndex].status = newStatus
+
+        this.setState({
+              isLoaded: true,
+              data: newData
+            });
+      }.bind(this));
   }
 
 
@@ -133,6 +173,8 @@ class Objectives extends React.Component{
       console.log(res);
       let data = res.data;
       console.log(data);
+      // sort objectives with default field and direction
+      data.objectives.sort(this.getComparator(this.state.sortField, this.state.direction))
       this.setState({
             isLoaded: true,
             data: data
@@ -140,6 +182,118 @@ class Objectives extends React.Component{
     }.bind(this));
 
   };
+
+  // return the appropriate comparator
+  // field is the field you want to sort (title, startDate, endDate, status)
+  // DEFAULT IS TITLE
+  // order = asc for ascending order, desc for descending order
+  // DEFAULT IS ASC
+
+  // -1 if a<b
+  // 0 a == b
+  // 1 if a > b
+  cmpTitle(a,b){
+    return a.name.localeCompare(b.name)
+  }
+
+  cmpStartDate(a,b){
+    const d1 = new Date(a.startDate)
+    const d2 = new Date(b.startDate)
+    return d1-d2
+  }
+
+  cmpEndDate(a,b){
+    const d1 = new Date(a.endDate)
+    const d2 = new Date(b.endDate)
+    return d1-d2
+  }
+
+  cmpStatus(a,b){
+    return a.status - b.status
+  }
+
+  getComparator(field, order){
+    // tiebreaker uses status to determine what should be below
+    // this sorts by 'NOT STARTED' to 'IN PROGRESS' to 'COMPLETED'
+    function tieBreaker(a,b) {
+      return a.status - b.status
+    }
+
+    if(field === 'title'){
+      return order === 'desc' 
+        ? (a,b) => {
+            let val = -this.cmpTitle(a,b)
+            // tiebreaker
+            if(val === 0){
+              val += this.cmpStatus(a,b)
+            }
+            return val
+          }
+        : (a,b) => {
+            let val = this.cmpTitle(a,b)
+            // tiebreaker
+            if(val === 0){
+              val += this.cmpStatus(a,b)
+            }
+            return val
+          }
+    }
+    else if(field === 'startDate'){
+      return order === 'desc'
+        ? (a,b) => {
+          let val = -this.cmpStartDate(a,b)
+          // tiebreaker
+          if(val === 0){
+            val += this.cmpStatus(a,b)
+          }
+          return val
+        }
+        : (a,b) => {
+          let val = this.cmpStartDate(a,b)
+          // tiebreaker
+          if(val === 0){
+            val += this.cmpStatus(a,b)
+          }
+          return val
+        }
+    }
+    else if(field === 'endDate'){
+      return order === 'desc'
+        ? (a,b) => {
+          let val = -this.cmpEndDate(a,b)
+          // tiebreaker
+          if(val === 0){
+            val += this.cmpStatus(a,b)
+          }
+          return val
+        }
+        : (a,b) => {
+          let val = this.cmpEndDate(a,b)
+          // tiebreaker
+          if(val === 0){
+            val += this.cmpStatus(a,b)
+          }
+          return val
+        }
+    }
+    else if(field === 'status'){
+      return order === 'desc'
+        ? (a,b) => {
+          let val = -this.cmpStatus(a,b)
+          if(val === 0){
+            val += this.cmpEndDate(a,b)
+          }
+          return val
+        }
+        : (a,b) => {
+          let val = this.cmpStatus(a,b)
+          if(val === 0){
+            val += this.cmpEndDate(a,b)
+          }
+          return val
+        }
+    }
+  }
 
 
 
@@ -304,8 +458,21 @@ class Objectives extends React.Component{
       this.closeDeleteConfirm();
     }
 
+    // sort objectivesData
+    const sort = (newSortField, newDirection) => {
+      objectivesData.sort(this.getComparator(newSortField, newDirection))
+      let newData = this.state.data;
+      newData.objectives = objectivesData;
+      this.setState({
+        data: newData,
+        sortField: newSortField,
+        direction: newDirection
+      })
+    }
+
+
     const ObjectiveRows = objectivesData.map(objective => (
-                        <ObjectiveRow objective={objective} openEditor={this.openEditor} deleteObjective={this.deleteObjective}/>
+                        <ObjectiveRow key={objective.id} objective={objective} openEditor={this.openEditor} deleteObjective={this.deleteObjective} toggleStatus={this.toggleStatus}/>
                         ))
 
     return (
@@ -323,12 +490,41 @@ class Objectives extends React.Component{
                   <Table>
                     <TableHead>
                       <TableRow>
-                        <TableCell>Title</TableCell>
-                        <TableCell>Start Date</TableCell>
-                        <TableCell>Due Date</TableCell>
+                        <TableCell>
+                          <TableSortLabel
+                            active={this.state.sortField === 'title'}
+                            direction={this.state.sortField === 'title' ? this.state.direction : 'asc'}
+                            onClick={()=>sort('title',this.state.direction === 'asc' && this.state.sortField === 'title' ? 'desc' : 'asc')}
+                          >
+                          Title
+                          </TableSortLabel>
+                        </TableCell>
+                        <TableCell>
+                          <TableSortLabel
+                            active={this.state.sortField === 'startDate'}
+                            direction={this.state.sortField === 'startDate' ? this.state.direction : 'asc'}
+                            onClick={()=>sort('startDate',this.state.direction === 'asc' && this.state.sortField === 'startDate' ? 'desc' : 'asc')}
+                          >Start Date
+                          </TableSortLabel>
+                        </TableCell>
+                        <TableCell>
+                          <TableSortLabel
+                            active={this.state.sortField === 'endDate'}
+                            direction={this.state.sortField === 'endDate' ? this.state.direction : 'asc'}
+                            onClick={()=>sort('endDate',this.state.direction === 'asc' && this.state.sortField === 'endDate' ? 'desc' : 'asc')}
+                          >End Date
+                          </TableSortLabel>
+                        </TableCell>
                         <TableCell>People</TableCell>
                         <TableCell>Tags</TableCell>
-                        <TableCell>Completion</TableCell>
+                        <TableCell>
+                          <TableSortLabel
+                            active={this.state.sortField === 'status'}
+                            direction={this.state.sortField === 'status' ? this.state.direction : 'asc'}
+                            onClick={()=>sort('status',this.state.direction === 'asc' && this.state.sortField === 'status'? 'desc' : 'asc')}
+                          >Status
+                          </TableSortLabel>
+                        </TableCell>
                         <TableCell 
                           align="right"
                           style={{width: 96+16+16}}
@@ -455,7 +651,7 @@ class Objectives extends React.Component{
               onSubmit={actuallyDeleteObjective}
             >
 
-            <Button color="primary" type="submit">
+            <Button style={{color: '#ff0000'}} color="primary" type="submit">
               Delete
             </Button>
             <Button color="secondary" onClick={this.closeDeleteConfirm}>
