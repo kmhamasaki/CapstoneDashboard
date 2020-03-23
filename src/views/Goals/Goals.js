@@ -101,19 +101,17 @@ class Goals extends React.Component {
     while(!isLoaded) {
       return <div>not here</div>
     }
-
+    //
     const handleClickOpen = () => {
       this.setState({
         open: true
       });
     };
+
     const handleClose = () => {
       this.setState({
         open: false
       });
-    };
-    const handleCreate = () => {
-      //dosomething here
     };
 
     const workplaceHandleClick = event => {
@@ -147,9 +145,10 @@ class Goals extends React.Component {
         console.log(res);
         let responseData = res.data;
         let newStrategy = {
-          strategyId : responseData.strategyId,
+          strategyId : this.strategyId,
+          goalId: responseData.goalId,
           name : name,
-          goals : [],
+          objectives : [],
           description : description
         }
         data.goals.push(newStrategy);
