@@ -7,6 +7,8 @@ import {
   CardContent,
   CardHeader,
   Checkbox,
+  Chip,
+  CircularProgress,
   Dialog,
   DialogContent,
   DialogTitle,
@@ -25,6 +27,7 @@ import {
   Tooltip,
   Typography
 } from '@material-ui/core';
+import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import axios from 'axios';
 import { withRouter, useParams} from 'react-router-dom';
@@ -35,6 +38,13 @@ import ObjectiveRow from './ObjectiveRow.js'
 import DatePicker from './DatePicker.js'
 
 const classes = theme => ({
+  loadingRoot:{
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100%'
+  },
   content: {
     padding: 0
   },
@@ -79,25 +89,18 @@ class Objectives extends React.Component{
 
     // this is how you get the url parameter
     this.goalId = props.match.params.id;
-
-    this.openEditor = this.openEditor.bind(this);
     this.closeEditor = this.closeEditor.bind(this);
     this.deleteObjective = this.deleteObjective.bind(this);
     this.closeDeleteConfirm = this.closeDeleteConfirm.bind(this);
     this.toggleStatus = this.toggleStatus.bind(this)
   }
 
-  openEditor(objective){
-    this.setState({
-      openEdit: true,
-      objective: objective
-    })
-  }
-
   closeEditor(){
     this.setState({
       openEdit: false,
-      objective: null
+      objective: null,
+      tagsSelected: null,
+      usersSelected: null
     })
   }
 
@@ -157,6 +160,8 @@ class Objectives extends React.Component{
 
 
   componentWillMount() {
+
+    // get objectives
     axios({
       method: 'post',
       url: 'http://localhost:4000/get_objectives',
@@ -170,9 +175,7 @@ class Objectives extends React.Component{
       alert(error);
     })
     .then(function (res) {
-      console.log(res);
       let data = res.data;
-      console.log(data);
       // sort objectives with default field and direction
       data.objectives.sort(this.getComparator(this.state.sortField, this.state.direction))
       this.setState({
@@ -181,6 +184,40 @@ class Objectives extends React.Component{
           });
     }.bind(this));
 
+    // get all users
+    axios({
+      method: 'post',
+      url: 'http://localhost:4000/get_all_users',
+    })
+    .catch(function (error) {
+    // handle error
+      alert(error);
+    })
+    .then(function (res) {
+      let data = res.data;
+      // sort objectives with default field and direction
+      this.setState({
+            usersData: data
+          });
+    }.bind(this));
+
+    // get all tags
+    axios({
+      method: 'post',
+      url: 'http://localhost:4000/get_all_tags',
+    })
+    .catch(function (error) {
+    // handle error
+      alert(error);
+    })
+    .then(function (res) {
+      let data = res.data;
+      // sort objectives with default field and direction
+      this.setState({
+            tagsData: data
+          });
+      console.log(data);
+    }.bind(this));
   };
 
   // return the appropriate comparator
@@ -301,18 +338,23 @@ class Objectives extends React.Component{
     const { error, isLoaded, data } = this.state;
     const { classes } = this.props;
 
-    // while(!isLoaded) {
-    //   return <div>not here</div>
-    // }
     console.log(classes);
 
     while(!isLoaded) {
-      return <div>not here</div>
+      return <div className={classes.loadingRoot}>
+        <CircularProgress />
+      </div>
     }
 
     //const objectivesData = objectivesDataImport;
     const objectivesData = data.objectives;
 
+    const clearTagAndUsers = () => {
+      this.setState({
+        tagsSelected: null,
+        usersSelected: null
+      })
+    }
     const openAddEditor = () => {
       this.setState({
         openAdd: true
@@ -323,34 +365,37 @@ class Objectives extends React.Component{
       this.setState({
         openAdd: false
       });
+      clearTagAndUsers();
     };
+
+    const openEditor = objective => {
+      console.log("HERE")
+      console.log(objective)
+      console.log([getUser(objective.assignedUser)])
+      this.setState({
+        openEdit: true,
+        objective: objective,
+        tagsSelected: objective.tags,
+        usersSelected: objective.assignedUser ? [getUser(objective.assignedUser)] : null
+    })
+  }
 
     const addNewObjective = event => {
       event.preventDefault();
-      this.setState({
-        openAdd: false
-      });
-      let myData = {
+      let newObjective = {
           name: event.target.elements.title.value,
           goalId: this.goalId,
-          tags: event.target.elements.tags.value,
-          assignedUsers: event.target.elements.people.value,
+          tags: this.state.tagsSelected,
+          assignedUser: this.state.usersSelected[0].email,
           startDate: event.target.elements.startDate.value,
           endDate: event.target.elements.dueDate.value,
+          description: "adhasd",
+          status: 0
       }
-      console.log(myData);
       axios({
       method: 'post',
         url: '/create_objective',
-        data:  {
-          name: event.target.elements.title.value,
-          goalId: this.goalId,
-          tags: event.target.elements.tags.value,
-          assignedUser: event.target.elements.people.value,
-          startDate: event.target.elements.startDate.value,
-          endDate: event.target.elements.dueDate.value,
-          description: "asdfas"
-      }
+        data:  newObjective
       })
       .catch(function (error) {
       // handle error
@@ -359,16 +404,8 @@ class Objectives extends React.Component{
       .then(function (res) {
         console.log(res);
         let responseData = res.data;
-        let newObjective = {
-          goalId : myData.goalId,
-          name : myData.name,
-          objectiveId: responseData.objectiveId,
-          tags: myData.tags,
-          assignedUser: myData.assignedUsers,
-          startDate: myData.startDate,
-          endDate: myData.endDate,
-          status: 0
-        }
+        // add objectiveId to the previously created objective object
+        newObjective.objectiveId = responseData.objectiveId;
         console.log(data);
         data.objectives.push(newObjective);
         //setting the state "refreshes the page"
@@ -377,8 +414,8 @@ class Objectives extends React.Component{
             isLoaded: true,
             data: data
           });
+        closeAddEditor();
       }.bind(this));
-
     };
 
     const editObjective = event => {
@@ -390,8 +427,8 @@ class Objectives extends React.Component{
         name: event.target.elements.title.value,
         startDate: event.target.elements.startDate.value,
         endDate: event.target.elements.dueDate.value,
-        tags: event.target.elements.tags.value,
-        assignedUser: event.target.elements.people.value,
+        tags: this.state.tagsSelected,
+        assignedUser: this.state.usersSelected[0].email,
         status: this.state.objective.status,
         goalId: this.state.objective.goalId,
         description: "fsdf",
@@ -420,8 +457,8 @@ class Objectives extends React.Component{
               isLoaded: true,
               data: newData
             });
+        this.closeEditor()
       }.bind(this));
-      this.closeEditor()
     }
 
     const actuallyDeleteObjective = event => {
@@ -470,9 +507,13 @@ class Objectives extends React.Component{
       })
     }
 
+    const Tags = this.state.tagsData ? this.state.tagsData.tags : [];
+    const Users = this.state.usersData ? this.state.usersData.users : [];
+    // function to return user object from email
+    const getUser = email => Users[Users.findIndex((user => user.email === email))];
 
     const ObjectiveRows = objectivesData.map(objective => (
-                        <ObjectiveRow key={objective.id} objective={objective} openEditor={this.openEditor} deleteObjective={this.deleteObjective} toggleStatus={this.toggleStatus}/>
+                        <ObjectiveRow key={objective.id} objective={objective} openEditor={openEditor} deleteObjective={this.deleteObjective} toggleStatus={this.toggleStatus}/>
                         ))
 
     return (
@@ -574,25 +615,56 @@ class Objectives extends React.Component{
                   />
                   <DatePicker startDate={this.state.objective ? this.state.objective.startDate : ""}
                   dueDate={this.state.objective ? this.state.objective.endDate : ""}/>
-                  <TextField
+                  <Autocomplete
+                    onChange={(event,value)=>this.setState({
+                        usersSelected: value
+                      })}
+                    multiple
                     id="people"
-                    margin="dense"
-                    name="people"
-                    label="People"
-                    multiline
-                    variant="outlined"
-                    defaultValue={this.state.objective ? this.state.objective.assignedUser : ""}
-                    fullWidth
+                    defaultValue={this.state.usersSelected ? this.state.usersSelected : []}
+                    options={Users}
+                    getOptionLabel={(option) => option.fname + " " + option.lname + " (" + option.email +")"}
+                    renderOption ={(option) => {
+                      return <React.Fragment>
+                          <span>{option.fname} {option.lname} <span style={{color:"grey", fontStyle:"italic"}}>{option.email}</span></span>
+                        </React.Fragment>
+                    }}
+                    filterSelectedOptions
+                    noOptionsText = "No user found"
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        id="newPeople"
+                        name="newPeople"
+                        margin="dense"
+                        variant="outlined"
+                        label="People"
+                        fullWidth
+                      />
+                    )}
                   />
-                  <TextField
+                  <Autocomplete
+                    onChange={(event,value)=>this.setState({
+                        tagsSelected: value
+                      })}
+                    multiple
                     id="tags"
-                    margin="dense"
-                    name="tags"
-                    label="Tags"
-                    multiline
-                    variant="outlined"
-                    defaultValue={this.state.objective ? this.state.objective.tags : ""}
-                    fullWidth
+                    defaultValue={this.state.tagsSelected ? this.state.tagsSelected : []}
+                    options={Tags}
+                    getOptionLabel={(option) => option}
+                    filterSelectedOptions
+                    freeSolo
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        id="newTag"
+                        name="newTag"
+                        margin="dense"
+                        variant="outlined"
+                        label="Tags"
+                        fullWidth
+                      />
+                    )}
                   />
                 <Button color="primary" type="submit">
                   Edit
@@ -618,23 +690,54 @@ class Objectives extends React.Component{
                     fullWidth
                   />
                   <DatePicker startDate={new Date()} dueDate={new Date()}/>
-                  <TextField
+                  <Autocomplete
+                    onChange={(event,value)=>this.setState({
+                        usersSelected: value
+                      })}
+                    multiple
                     id="people"
-                    margin="dense"
-                    name="people"
-                    label="People"
-                    multiline
-                    variant="outlined"
-                    fullWidth
+                    options={Users}
+                    getOptionLabel={(option) => option.fname + " " + option.lname + " (" + option.email +")"}
+                    renderOption ={(option) => {
+                      return <React.Fragment>
+                          <span>{option.fname} {option.lname} <span style={{color:"grey", fontStyle:"italic"}}>{option.email}</span></span>
+                        </React.Fragment>
+                    }}
+                    filterSelectedOptions
+                    noOptionsText = "No user found"
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        id="newPeople"
+                        name="newPeople"
+                        margin="dense"
+                        variant="outlined"
+                        label="People"
+                        fullWidth
+                      />
+                    )}
                   />
-                  <TextField
+                  <Autocomplete
+                    onChange={(event,value)=>this.setState({
+                        tagsSelected: value
+                      })}
+                    multiple
                     id="tags"
-                    margin="dense"
-                    name="tags"
-                    label="Tags"
-                    multiline
-                    variant="outlined"
-                    fullWidth
+                    options={Tags}
+                    getOptionLabel={(option) => option}
+                    filterSelectedOptions
+                    freeSolo
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        id="newTag"
+                        name="newTag"
+                        margin="dense"
+                        variant="outlined"
+                        label="Tags"
+                        fullWidth
+                      />
+                    )}
                   />
                 <Button color="primary" type="submit">
                   Create

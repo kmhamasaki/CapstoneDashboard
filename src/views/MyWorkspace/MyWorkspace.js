@@ -6,6 +6,7 @@ import {
   Card, 
   CardContent,
   CardMedia,
+  CircularProgress,
   Typography, 
   TextField,
   Dialog,
@@ -34,6 +35,13 @@ import { withStyles } from '@material-ui/styles';
 import AddCard from '../../components/AddCard';
 
 const classes = theme => ({
+  loadingRoot:{
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100%'
+  },
   root: {
     padding: theme.spacing(4)
   },
@@ -44,7 +52,6 @@ const classes = theme => ({
 
   },
   content: {
-    alignItems: 'center',
     display: 'flex',
     alignItems: 'center',
     justify:"center"
@@ -107,7 +114,9 @@ class MyWorkspace extends React.Component {
     const { classes } = this.props;
 
     while(!isLoaded) {
-      return <div>not here</div>
+      return <div className={classes.loadingRoot}>
+        <CircularProgress />
+      </div>
     }
 
     const handleClickOpen = () => {

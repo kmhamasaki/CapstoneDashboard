@@ -2,17 +2,18 @@ import React, { useCallback, useState} from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { 
   Grid, 
+  Button,
   IconButton, 
   Card, 
   CardContent,
-  Typography, 
-  TextField,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Button
+  Typography, 
+  TextField,
 } from '@material-ui/core';
 import {
   Budget,
@@ -31,6 +32,13 @@ import axios from 'axios';
 import { withStyles } from '@material-ui/styles';
 
 const classes = theme => ({
+  loadingRoot:{
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100%'
+  },
   root: {
     padding: theme.spacing(4)
   },
@@ -99,9 +107,11 @@ class Goals extends React.Component {
     const { classes } = this.props;
 
     while(!isLoaded) {
-      return <div>not here</div>
+      return <div className={classes.loadingRoot}>
+        <CircularProgress />
+      </div>
     }
-    //
+
     const handleClickOpen = () => {
       this.setState({
         open: true
