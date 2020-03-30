@@ -7,6 +7,7 @@ import {
   CardContent,
   CardHeader,
   Checkbox,
+  Chip,
   Divider,
   Button,
   IconButton,
@@ -35,40 +36,6 @@ class ObjectiveRow extends React.Component{
 		super(props)
 		let mystatus = props.objective.status;
 	}
-    onProgressClick = (objective) => {
-    	let newStatus = 0;
-    	switch(this.state.status) {
-		  case 0:
-		    newStatus = 1;
-		    break;
-		  case 1:
-		    newStatus = 2;
-		    break;
-		  case 2:
-		    newStatus = 0;
-		}
-		let objectiveId = objective.objectiveId;
-    	axios({
-	      method: 'post',
-	      url: 'http://localhost:4000/update_objective_status',
-	      data: {
-	        objectiveId: objectiveId,
-	        status: newStatus
-	      }
-	    })
-	    .catch(function (error) {
-	    // handle error
-	      alert(error);
-	    })
-	    .then(function (res) {
-	      console.log(res);
-	      let data = res.data;
-	      console.log(data);
-	      this.setState({
-	            status: newStatus
-	          });
-	    }.bind(this));
-    }
 
 	render(){
 
@@ -103,7 +70,7 @@ class ObjectiveRow extends React.Component{
 	            {objective.endDate}
 	          </TableCell>
 	          <TableCell>{objective.assignedUser}</TableCell>
-	          <TableCell>{objective.tags}</TableCell>
+	          <TableCell>{objective.tags.map(tag=>(<Chip clickable label={tag} />) )}</TableCell>
 	          <TableCell>
 	          	<Button
 	          		style={{color: color}}
