@@ -82,11 +82,43 @@ class MyWorkspace extends React.Component {
       error: null,
       isLoaded: false,
       items: [],
-      open: false
+      open: false,
+      openEdit: false,
+      deleteConfirm: false,
     };
+    this.closeEditor = this.closeEditor.bind(this);
+    this.deleteObjective = this.deleteObjective.bind(this);
+    this.closeDeleteConfirm = this.closeDeleteConfirm.bind(this);
+
+  }
+
+
+
+  closeEditor(){
+    this.setState({
+      openEdit: false,
+      strategy: null,
+    })
+  }
+
+
+  deleteObjective(strategy){
+    console.log("106");
+    this.setState({
+      deleteConfirm: true,
+      strategy: strategy,
+    })
+  }
+
+  closeDeleteConfirm(){
+    this.setState({
+      deleteConfirm: false,
+      strategy: null
+    })
   }
 
   componentWillMount() {
+    console.log(121);
     axios({
       method: 'post',
       url: 'http://localhost:4000/get_strategies',
@@ -133,6 +165,16 @@ class MyWorkspace extends React.Component {
       //dosomething here
     };
 
+    const openEditor = strategy => {
+      console.log("HERE")
+      console.log(strategy)
+      this.setState({
+        openEdit: true,
+        strategy: strategy,
+      })
+    }
+
+
     const workplaceHandleClick = event => {
       event.preventDefault();
 
@@ -148,7 +190,7 @@ class MyWorkspace extends React.Component {
         url: '/create_strategy',
         data: {
           name: name,
-          description: description
+          description: description == "" ? "description" : description
         }
       })
       .catch(function (error) {
@@ -175,13 +217,86 @@ class MyWorkspace extends React.Component {
 
     };
 
+    const editStrategy = event => {
+      event.preventDefault();
+
+      let deets = event.target.elements;
+      const strategy = {
+        strategyId : this.state.strategy.strategyId,
+        name: event.target.elements.title.value,
+        description: "description"
+      }
+      console.log(strategy)
+      axios({
+        method: 'post',
+        url: 'http://localhost:4000/update_strategy',
+        data: strategy
+      })
+      .catch(function (error) {
+      // handle error
+        alert(error);
+      })
+      .then(function (res) {
+        console.log(res);
+        let resdata = res.data;
+        console.log(resdata);
+
+        let newData = this.state.data;
+        console.log(newData);
+        let objIndex = newData.strategies.findIndex((obj => obj.strategyId == strategy.strategyId));
+
+        if(objIndex >= 0)
+          newData.strategies[objIndex] = strategy;
+        this.setState({
+              isLoaded: true,
+              data: newData
+            });
+        this.closeEditor()
+      }.bind(this));
+    }
+
+    const actuallyDeleteStrategy = event => {
+      event.preventDefault();
+      console.log("delete!!!!!!");
+
+      const strategy = this.state.strategy;
+      console.log(strategy);
+      axios({
+        method: 'post',
+        url: 'http://localhost:4000/delete_strategy',
+        data: {
+          strategyId: strategy.strategyId
+        }
+      })
+      .catch(function (error) {
+        alert(error);
+      })
+      .then(function (res) {
+        console.log(res);
+        let data = res.data;
+        console.log(data);
+        let newData = this.state.data;
+        console.log(newData);
+        let objIndex = newData.strategies.findIndex((obj => obj.strategyId == strategy.strategyId));
+        if(objIndex >= 0)
+          newData.strategies.splice(objIndex, 1);
+
+        this.setState({
+              isLoaded: true,
+              data: newData
+            });
+      }.bind(this));
+
+      this.closeDeleteConfirm();
+    }
+
     console.log(data)
     const strategies = data.strategies;
     const cards=[];
 
     for(var i=0;i<strategies.length;i++){
       // push the component to elements!
-      cards.push(<TasksProgress strategy={ strategies[i] } />);
+      cards.push(<TasksProgress strategy={ strategies[i] } openEditor={openEditor} deleteObjective={this.deleteObjective}  />);
     }
 
       return (
@@ -279,6 +394,48 @@ class MyWorkspace extends React.Component {
                 />
               <Button color="primary" type="submit">
                 Create
+              </Button>
+              </form>
+            </DialogContent>
+            </Dialog>
+                <Dialog open={this.state.openEdit} onClose={this.closeEditor} aria-labelledby="edit-objective">
+                <DialogTitle id="edit-strategy">Edit Strategy</DialogTitle>
+                <DialogContent>
+                  <form
+                    id="editStrategy"
+                    className={classes.form}
+                    onSubmit={editStrategy}
+                  >
+                    <TextField
+                      id="title"
+                      margin="dense"
+                      name="title"
+                      label="Title"
+                      multiline
+                      variant="outlined"
+                      defaultValue={this.state.strategy ? this.state.strategy.name : ""}
+                      fullWidth
+                    />
+                  <Button color="primary" type="submit">
+                    Edit
+                  </Button>
+                  </form>
+                </DialogContent>
+          </Dialog>
+          <Dialog open={this.state.deleteConfirm} onClose={this.closeDeleteConfirm} aria-labelledby="delete-confirmation">
+          <DialogTitle id="delete-confirmation">Are you sure you want to delete strategy?</DialogTitle>
+            <DialogContent>
+              <form
+                id="deleteObjective"
+                className={classes.form}
+                onSubmit={actuallyDeleteStrategy}
+              >
+
+              <Button style={{color: '#ff0000'}} color="primary" type="submit">
+                Delete
+              </Button>
+              <Button color="secondary" onClick={this.closeDeleteConfirm}>
+                Don't delete
               </Button>
               </form>
             </DialogContent>

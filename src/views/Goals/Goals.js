@@ -75,9 +75,38 @@ class Goals extends React.Component {
       error: null,
       isLoaded: false,
       items: [],
-      open: false
+      open: false,
+      openEdit: false,
+      deleteConfirm: false,
     };
     this.strategyId = props.match.params.id
+    this.closeEditor = this.closeEditor.bind(this);
+    this.deleteGoal = this.deleteGoal.bind(this);
+    this.closeDeleteConfirm = this.closeDeleteConfirm.bind(this);
+
+  }
+
+  closeEditor(){
+    this.setState({
+      openEdit: false,
+      goal: null,
+    })
+  }
+
+
+  deleteGoal(goal){
+    console.log("106");
+    this.setState({
+      deleteConfirm: true,
+      goal: goal,
+    })
+  }
+
+  closeDeleteConfirm(){
+    this.setState({
+      deleteConfirm: false,
+      goal: null
+    })
   }
 
   componentWillMount() {
@@ -124,6 +153,15 @@ class Goals extends React.Component {
       });
     };
 
+    const openEditor = goal => {
+      console.log("HERE")
+      console.log(goal)
+      this.setState({
+        openEdit: true,
+        goal: goal,
+      })
+    }
+
     const workplaceHandleClick = event => {
       event.preventDefault();
 
@@ -142,7 +180,7 @@ class Goals extends React.Component {
         data: {
           strategyId: this.strategyId,
           name: name,
-          description: description,
+          description: description == "" ? "description" : description,
           startDate: "01/01/2020",
           endDate: "01/01/2020"
         }
@@ -159,7 +197,7 @@ class Goals extends React.Component {
           goalId: responseData.goalId,
           name : name,
           objectives : [],
-          description : description
+          description: description == "" ? "description" : description
         }
         data.goals.push(newStrategy);
         // setting the state "refreshes the page"
@@ -171,6 +209,81 @@ class Goals extends React.Component {
       }.bind(this));
     };
 
+    const editGoal = event => {
+      event.preventDefault();
+
+      let deets = event.target.elements;
+      const goal = {
+        goalId : this.state.goal.goalId,
+        strategyId: this.state.goal.strategyId,
+        name: event.target.elements.title.value,
+        description: "description"
+      }
+      console.log(goal)
+      axios({
+        method: 'post',
+        url: 'http://localhost:4000/update_goal',
+        data: goal
+      })
+      .catch(function (error) {
+      // handle error
+        alert(error);
+      })
+      .then(function (res) {
+        console.log(res);
+        let resdata = res.data;
+        console.log(resdata);
+
+        let newData = this.state.data;
+        console.log(newData);
+        let objIndex = newData.goals.findIndex((obj => obj.goalId == goal.goalId));
+
+        if(objIndex >= 0)
+          newData.goals[objIndex] = goal;
+        this.setState({
+              isLoaded: true,
+              data: newData
+            });
+        this.closeEditor()
+      }.bind(this));
+    }
+
+    const actuallyDeleteGoal = event => {
+      event.preventDefault();
+      console.log("delete!!!!!!");
+
+      const goal = this.state.goal;
+      console.log(goal);
+      axios({
+        method: 'post',
+        url: 'http://localhost:4000/delete_goal',
+        data: {
+          goalId: goal.goalId
+        }
+      })
+      .catch(function (error) {
+        alert(error);
+      })
+      .then(function (res) {
+        console.log(res);
+        let data = res.data;
+        console.log(data);
+        let newData = this.state.data;
+        console.log(newData);
+        let objIndex = newData.goals.findIndex((obj => obj.goalId == goal.goalId));
+        if(objIndex >= 0)
+          newData.goals.splice(objIndex, 1);
+
+        this.setState({
+              isLoaded: true,
+              data: newData
+            });
+      }.bind(this));
+
+      this.closeDeleteConfirm();
+    }
+
+
     console.log(data);
 
     let goals = data.goals;
@@ -180,7 +293,7 @@ class Goals extends React.Component {
 
     for(var i=0;i<goals.length;i++){
       // push the component to elements!
-      cards.push(<TasksProgress goal={ goals[i] } />);
+      cards.push(<TasksProgress goal={ goals[i] } openEditor={openEditor} deleteGoal={this.deleteGoal}/>);
     }
 
       return (
@@ -252,6 +365,48 @@ class Goals extends React.Component {
                 />
               <Button color="primary" type="submit">
                 Create
+              </Button>
+              </form>
+            </DialogContent>
+          </Dialog>
+          <Dialog open={this.state.openEdit} onClose={this.closeEditor} aria-labelledby="edit-objective">
+                <DialogTitle id="edit-strategy">Edit Goal</DialogTitle>
+                <DialogContent>
+                  <form
+                    id="editGoal"
+                    className={classes.form}
+                    onSubmit={editGoal}
+                  >
+                    <TextField
+                      id="title"
+                      margin="dense"
+                      name="title"
+                      label="Title"
+                      multiline
+                      variant="outlined"
+                      defaultValue={this.state.goal ? this.state.goal.name : ""}
+                      fullWidth
+                    />
+                  <Button color="primary" type="submit">
+                    Edit
+                  </Button>
+                  </form>
+                </DialogContent>
+          </Dialog>
+          <Dialog open={this.state.deleteConfirm} onClose={this.closeDeleteConfirm} aria-labelledby="delete-confirmation">
+          <DialogTitle id="delete-confirmation">Are you sure you want to delete goal?</DialogTitle>
+            <DialogContent>
+              <form
+                id="deleteObjective"
+                className={classes.form}
+                onSubmit={actuallyDeleteGoal}
+              >
+
+              <Button style={{color: '#ff0000'}} color="primary" type="submit">
+                Delete
+              </Button>
+              <Button color="secondary" onClick={this.closeDeleteConfirm}>
+                Don't delete
               </Button>
               </form>
             </DialogContent>

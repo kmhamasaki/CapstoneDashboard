@@ -6,12 +6,15 @@ import {
   Card,
   CardContent,
   Grid,
+  IconButton,
   Typography,
   Avatar,
   LinearProgress
 } from '@material-ui/core';
 import InsertChartIcon from '@material-ui/icons/InsertChartOutlined';
 import { withRouter} from 'react-router-dom';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -55,13 +58,14 @@ const TasksProgress = props => {
           xl={4}
           xs={12}
         >
-        <div style={{ cursor: 'pointer' }} onClick={() => history.push('/goals/'+props.strategy.strategyId)}>
+        <div >
 
     <Card
       {...rest}
       className={clsx(classes.root, className)}
     >
       <CardContent>
+      <div style={{ cursor: 'pointer' }} onClick={() => history.push('/goals/'+props.strategy.strategyId)}>
         <Grid
           container
           justify="space-between"
@@ -83,6 +87,13 @@ const TasksProgress = props => {
           value={props.strategy.completion ? props.strategy.completion : 0}
           variant="determinate"
         />
+        </div>
+        <IconButton aria-label="edit" onClick={()=>props.openEditor(props.strategy)}>
+          <EditIcon />
+        </IconButton>
+        <IconButton aria-label="delete" onClick={()=>props.deleteObjective(props.strategy)}>
+          <DeleteIcon />
+        </IconButton>
       </CardContent>
     </Card>
     </div>
