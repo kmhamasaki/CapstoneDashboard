@@ -79,12 +79,13 @@ class Objectives extends React.Component{
     this.state = {
       error: null,
       isLoaded: false,
-      items: [],
       openEdit: false,
       openAdd: false,
       deleteConfirm: false,
       direction: 'asc',
-      sortField: 'status'
+      sortField: 'status',
+      filterTags: [],
+      filterUsers: []
     };
 
     // this is how you get the url parameter
@@ -346,9 +347,7 @@ class Objectives extends React.Component{
         <CircularProgress />
       </div>
     }
-
-    //const objectivesData = objectivesDataImport;
-    const objectivesData = data.objectives;
+    //
 
     const clearTagAndUsers = () => {
       this.setState({
@@ -521,14 +520,73 @@ class Objectives extends React.Component{
     // function to return user object from email
     const getUser = email => Users[Users.findIndex((user => user.email === email))];
 
-    const ObjectiveRows = objectivesData.map(objective => (
-                        <ObjectiveRow key={objective.id} objective={objective} openEditor={openEditor} deleteObjective={this.deleteObjective} toggleStatus={this.toggleStatus}/>
+    const objectivesData = data.objectives;
+    // get all unique tags
+    let allTags = []
+    for(let i=0; i<objectivesData.length; i++){
+      let objectiveTags = objectivesData[i].tags
+      for(let j=0; j<objectiveTags.length; j++){
+        if(allTags.indexOf(objectiveTags[j])==-1){
+          allTags.push(objectiveTags[j]);
+        }
+      }
+    }
+
+    // function to be called when you click on a filter tag
+    const filter = (tag) => {
+      let newFilterTags = this.state.filterTags
+      let idx = newFilterTags.indexOf(tag)
+      if(idx === -1){
+        newFilterTags.push(tag)
+      }
+      else{
+        newFilterTags.splice(idx, 1)
+      }
+      this.setState({
+        filterTags: newFilterTags
+      })
+    }
+
+    // chips to display at the top of the page
+    const TagChips = allTags.map(tag => (
+                        <Chip clickable label={tag} color={this.state.filterTags.indexOf(tag)===-1 ? 'default' : 'primary'} onClick={()=>filter(tag)}/>
+                      ))
+
+    // filter objectivesData
+    const filterTags = this.state.filterTags;
+    let filteredObjectives = [];
+    if(this.state.filterTags.length>0){
+      loop1:
+      for(let i=0; i<objectivesData.length; i++){
+        loop2:
+        for(let j=0; j<filterTags.length; j++){
+          loop3:
+          for(let k=0; k<objectivesData[i].tags.length; k++){
+            if(objectivesData[i].tags[k]==filterTags[j]){
+              if(j==filterTags.length-1){
+                filteredObjectives.push(objectivesData[i]);
+              }else{
+                continue loop2;
+              }
+            }
+          }
+          break loop2;
+        }
+      }
+    }else{
+      filteredObjectives = objectivesData;
+    }
+    console.log(filteredObjectives);
+
+    const ObjectiveRows = filteredObjectives.map(objective => (
+                        <ObjectiveRow key={objective.id} objective={objective} openEditor={openEditor} deleteObjective={this.deleteObjective} toggleStatus={this.toggleStatus} onClickTag={filter}/>
                         ))
 
     return (
       <div className={classes.root}>
         <div className={classes.contentTable}>
         <div>
+          Filter By: {TagChips}
           <Card>
             <CardHeader
               title="Your Objectives"
