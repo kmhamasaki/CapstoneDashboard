@@ -33,6 +33,8 @@ import PerfectScrollbar from 'react-perfect-scrollbar'
 import axios from 'axios';
 import { withRouter, useParams} from 'react-router-dom';
 import AddIcon from '@material-ui/icons/Add';
+import ClearAllIcon from '@material-ui/icons/ClearAll';
+import FilterListIcon from '@material-ui/icons/FilterList';
 import { withStyles } from '@material-ui/styles';
 import objectivesDataImport from './ObjectivesList.js'
 import ObjectiveRow from './ObjectiveRow.js'
@@ -529,7 +531,7 @@ class Objectives extends React.Component{
     const getUser = email => Users[Users.findIndex((user => user.email === email))];
 
     const objectivesData = data.objectives;
-    // get all unique tags
+    // get all tags from this page's objectives
     let allTags = []
     for(let i=0; i<objectivesData.length; i++){
       let objectiveTags = objectivesData[i].tags
@@ -537,6 +539,13 @@ class Objectives extends React.Component{
         if(allTags.indexOf(objectiveTags[j])==-1){
           allTags.push(objectiveTags[j]);
         }
+      }
+    }
+    // check for any tags from objectives that has been recently deleted
+    const filterTags = this.state.filterTags
+    for(let i=0; i<filterTags.length; i++){
+      if(allTags.indexOf(filterTags[i])==-1){
+        allTags.push(filterTags[i]);
       }
     }
     allTags.sort();
@@ -577,7 +586,7 @@ class Objectives extends React.Component{
 
     // filter objectivesData
     // tags first
-    const filterTags = this.state.filterTags;
+    // const filterTags = this.state.filterTags; // already declared above
     let filteredObjectives = [];
     if(filterTags.length>0){
       loop1:
@@ -604,8 +613,8 @@ class Objectives extends React.Component{
     const filterStatus = this.state.filterStatus;
     console.log(filterStatus)
     let filteredObjectives2 = []
-
-    if(!filterStatus.every((status)=>status===false)){
+    const statusFilterApplied = !filterStatus.every((status)=>status===false)
+    if(statusFilterApplied){
       loop1:
       for(let i=0; i<filteredObjectives.length; i++){
         loop2:
@@ -638,12 +647,27 @@ class Objectives extends React.Component{
               title="Your Objectives"
             />
             <CardContent>
-              <Button onClick={()=>this.setState({showFilters:!this.state.showFilters})}>
+              <Button 
+                startIcon={<FilterListIcon />} 
+                onClick={()=>this.setState({showFilters:!this.state.showFilters})}
+                color={this.state.filterTags.length>0 || statusFilterApplied ? "secondary" : "default"}
+              >
                 FILTERS
               </Button>
               <Collapse in={this.state.showFilters}>
+                <Typography>
                 Tags: {TagChips}
+                </Typography>
+                <Typography>
                 Status: {StatusChips}
+                </Typography>
+                <Button 
+                  startIcon={<ClearAllIcon />}
+                  disabled={!(this.state.filterTags.length>0 || statusFilterApplied)}
+                  onClick={()=>this.setState({filterTags:[],filterStatus:[false,false,false]})}
+                >
+                  Clear Filters
+                </Button>
               </Collapse>
             </CardContent>
             <Divider />
