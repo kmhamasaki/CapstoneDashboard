@@ -57,6 +57,7 @@ class ObjectiveRow extends React.Component{
 		    color = "seagreen";
 		    completionText = "Done"
 		}
+		objective.tags.sort();
 		return(
 			<TableRow
 	          hover
