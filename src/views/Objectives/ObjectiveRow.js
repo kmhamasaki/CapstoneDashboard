@@ -69,7 +69,7 @@ class ObjectiveRow extends React.Component{
 	          <TableCell>
 	            {objective.endDate}
 	          </TableCell>
-	          <TableCell>{objective.assignedUser}</TableCell>
+	          <TableCell>{objective.assignedUsers.map(tag=>(<Chip clickable label={tag} />) )}</TableCell>
 	          <TableCell>{objective.tags.map(tag=>(<Chip clickable label={tag} />) )}</TableCell>
 	          <TableCell>
 	          	<Button

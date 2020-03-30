@@ -113,11 +113,12 @@ class MyWorkspace extends React.Component {
   closeDeleteConfirm(){
     this.setState({
       deleteConfirm: false,
-      objective: null
+      strategy: null
     })
   }
 
   componentWillMount() {
+    console.log(121);
     axios({
       method: 'post',
       url: 'http://localhost:4000/get_strategies',

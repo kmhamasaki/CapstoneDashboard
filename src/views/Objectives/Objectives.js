@@ -178,6 +178,7 @@ class Objectives extends React.Component{
       let data = res.data;
       // sort objectives with default field and direction
       data.objectives.sort(this.getComparator(this.state.sortField, this.state.direction))
+      console.log(data);
       this.setState({
             isLoaded: true,
             data: data
@@ -382,16 +383,21 @@ class Objectives extends React.Component{
 
     const addNewObjective = event => {
       event.preventDefault();
+      let assignedUsers = [];
+      for(var i = 0; i < this.state.usersSelected.length; i++) {
+        assignedUsers.push(this.state.usersSelected[i].email);
+      }
       let newObjective = {
           name: event.target.elements.title.value,
           goalId: this.goalId,
           tags: this.state.tagsSelected,
-          assignedUser: this.state.usersSelected[0].email,
+          assignedUsers: assignedUsers,
           startDate: event.target.elements.startDate.value,
           endDate: event.target.elements.dueDate.value,
           description: "adhasd",
           status: 0
       }
+      console.log(newObjective);
       axios({
       method: 'post',
         url: '/create_objective',
