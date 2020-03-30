@@ -370,14 +370,13 @@ class Objectives extends React.Component{
     };
 
     const openEditor = objective => {
-      console.log("HERE")
       console.log(objective)
-      console.log([getUser(objective.assignedUser)])
+      let assignedUsers = objective.assignedUsers.map((email)=>getUser(email))
       this.setState({
         openEdit: true,
         objective: objective,
         tagsSelected: objective.tags,
-        usersSelected: objective.assignedUser ? [getUser(objective.assignedUser)] : null
+        usersSelected: objective.assignedUsers ? assignedUsers : null
     })
   }
 
@@ -427,6 +426,10 @@ class Objectives extends React.Component{
     const editObjective = event => {
       event.preventDefault();
 
+      let assignedUsers = [];
+      for(var i = 0; i < this.state.usersSelected.length; i++) {
+        assignedUsers.push(this.state.usersSelected[i].email);
+      }
       let deets = event.target.elements;
       const objective = {
         objectiveId : this.state.objective.objectiveId,
@@ -434,7 +437,7 @@ class Objectives extends React.Component{
         startDate: event.target.elements.startDate.value,
         endDate: event.target.elements.dueDate.value,
         tags: this.state.tagsSelected,
-        assignedUser: this.state.usersSelected[0].email,
+        assignedUsers: assignedUsers,
         status: this.state.objective.status,
         goalId: this.state.objective.goalId,
         description: "fsdf",
