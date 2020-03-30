@@ -9,6 +9,7 @@ import {
   Checkbox,
   Chip,
   CircularProgress,
+  Collapse,
   Dialog,
   DialogContent,
   DialogTitle,
@@ -32,6 +33,8 @@ import PerfectScrollbar from 'react-perfect-scrollbar'
 import axios from 'axios';
 import { withRouter, useParams} from 'react-router-dom';
 import AddIcon from '@material-ui/icons/Add';
+import ClearAllIcon from '@material-ui/icons/ClearAll';
+import FilterListIcon from '@material-ui/icons/FilterList';
 import { withStyles } from '@material-ui/styles';
 import objectivesDataImport from './ObjectivesList.js'
 import ObjectiveRow from './ObjectiveRow.js'
@@ -79,12 +82,17 @@ class Objectives extends React.Component{
     this.state = {
       error: null,
       isLoaded: false,
-      items: [],
       openEdit: false,
       openAdd: false,
       deleteConfirm: false,
+      showFilters: false,
       direction: 'asc',
-      sortField: 'status'
+      sortField: 'status',
+      filterTags: [],
+      filterStatus: [false,false,false],
+      filterUsers: [],
+      tagsSelected: [],
+      usersSelected: []
     };
 
     // this is how you get the url parameter
@@ -99,8 +107,8 @@ class Objectives extends React.Component{
     this.setState({
       openEdit: false,
       objective: null,
-      tagsSelected: null,
-      usersSelected: null
+      tagsSelected: [],
+      usersSelected: []
     })
   }
 
@@ -346,14 +354,12 @@ class Objectives extends React.Component{
         <CircularProgress />
       </div>
     }
-
-    //const objectivesData = objectivesDataImport;
-    const objectivesData = data.objectives;
+    //
 
     const clearTagAndUsers = () => {
       this.setState({
-        tagsSelected: null,
-        usersSelected: null
+        tagsSelected: [],
+        usersSelected: []
       })
     }
     const openAddEditor = () => {
@@ -517,13 +523,120 @@ class Objectives extends React.Component{
     }
 
     const Tags = this.state.tagsData ? this.state.tagsData.tags : [];
+    Tags.sort();
     const Users = this.state.usersData ? this.state.usersData.users : [];
+    // sort by first name, then last name
+    Users.sort((a,b)=>a.fname.localeCompare(b.fname) ? a.fname.localeCompare(b.fname) : a.fname.localeCompare(b.fname)+a.lname.localeCompare(b.lname))
     // function to return user object from email
     const getUser = email => Users[Users.findIndex((user => user.email === email))];
 
-    const ObjectiveRows = objectivesData.map(objective => (
-                        <ObjectiveRow key={objective.id} objective={objective} openEditor={openEditor} deleteObjective={this.deleteObjective} toggleStatus={this.toggleStatus}/>
+    const objectivesData = data.objectives;
+    // get all tags from this page's objectives
+    let allTags = []
+    for(let i=0; i<objectivesData.length; i++){
+      let objectiveTags = objectivesData[i].tags
+      for(let j=0; j<objectiveTags.length; j++){
+        if(allTags.indexOf(objectiveTags[j])==-1){
+          allTags.push(objectiveTags[j]);
+        }
+      }
+    }
+    // check for any tags from objectives that has been recently deleted
+    const filterTags = this.state.filterTags
+    for(let i=0; i<filterTags.length; i++){
+      if(allTags.indexOf(filterTags[i])==-1){
+        allTags.push(filterTags[i]);
+      }
+    }
+    allTags.sort();
+
+    // function to be called when you click on a filter tag
+    const addFilterTag = (tag) => {
+      let newFilterTags = this.state.filterTags
+      let idx = newFilterTags.indexOf(tag)
+      if(idx === -1){
+        newFilterTags.push(tag)
+      }
+      else{
+        newFilterTags.splice(idx, 1)
+      }
+      this.setState({
+        filterTags: newFilterTags
+      })
+    }
+    const addFilterStatus = (status) => {
+      console.log("ouch")
+      let newStatusTags = this.state.filterStatus
+      console.log(newStatusTags)
+      newStatusTags[status] = !newStatusTags[status]
+      this.setState({
+        filterStatus: newStatusTags
+      })
+    }
+
+    // chips to display at the top of the page
+    const TagChips = allTags.map(tag => (
+                        <Chip clickable label={tag} color={this.state.filterTags.indexOf(tag)===-1 ? 'default' : 'primary'} onClick={()=>addFilterTag(tag)}/>
+                      ))
+    const statuses = [0,1,2]
+    const statusesText = ["Not Started", "In Progress", "Done"]
+    const StatusChips = statuses.map(status => (
+                            <Chip clickable label={statusesText[status]} color={this.state.filterStatus[status] ? 'primary' : 'default'} onClick={()=>addFilterStatus(status)}/>
+                          ))
+
+    // filter objectivesData
+    // tags first
+    // const filterTags = this.state.filterTags; // already declared above
+    let filteredObjectives = [];
+    if(filterTags.length>0){
+      loop1:
+      for(let i=0; i<objectivesData.length; i++){
+        loop2:
+        for(let j=0; j<filterTags.length; j++){
+          loop3:
+          for(let k=0; k<objectivesData[i].tags.length; k++){
+            if(objectivesData[i].tags[k]==filterTags[j]){
+              if(j==filterTags.length-1){
+                filteredObjectives.push(objectivesData[i]);
+              }else{
+                continue loop2;
+              }
+            }
+          }
+          break loop2;
+        }
+      }
+    }else{
+      filteredObjectives = objectivesData;
+    }
+    // then status
+    const filterStatus = this.state.filterStatus;
+    console.log(filterStatus)
+    let filteredObjectives2 = []
+    const statusFilterApplied = !filterStatus.every((status)=>status===false)
+    if(statusFilterApplied){
+      loop1:
+      for(let i=0; i<filteredObjectives.length; i++){
+        loop2:
+        for(let j=0; j<filterStatus.length; j++){
+          if(filterStatus[j] && filteredObjectives[i].status==j){
+            filteredObjectives2.push(filteredObjectives[i]);
+            continue loop1;
+          }
+        }
+      }
+    }
+    else{
+      filteredObjectives2 = filteredObjectives
+    }
+
+    console.log(filteredObjectives);
+    console.log(filteredObjectives2);
+
+    const ObjectiveRows = filteredObjectives2.map(objective => (
+                        <ObjectiveRow key={objective.id} objective={objective} openEditor={openEditor} deleteObjective={this.deleteObjective} toggleStatus={this.toggleStatus} onClickTag={addFilterTag}/>
                         ))
+
 
     return (
       <div className={classes.root}>
@@ -533,6 +646,30 @@ class Objectives extends React.Component{
             <CardHeader
               title="Your Objectives"
             />
+            <CardContent>
+              <Button 
+                startIcon={<FilterListIcon />} 
+                onClick={()=>this.setState({showFilters:!this.state.showFilters})}
+                color={this.state.filterTags.length>0 || statusFilterApplied ? "secondary" : "default"}
+              >
+                FILTERS
+              </Button>
+              <Collapse in={this.state.showFilters}>
+                <Typography>
+                Tags: {TagChips}
+                </Typography>
+                <Typography>
+                Status: {StatusChips}
+                </Typography>
+                <Button 
+                  startIcon={<ClearAllIcon />}
+                  disabled={!(this.state.filterTags.length>0 || statusFilterApplied)}
+                  onClick={()=>this.setState({filterTags:[],filterStatus:[false,false,false]})}
+                >
+                  Clear Filters
+                </Button>
+              </Collapse>
+            </CardContent>
             <Divider />
             <CardContent className={classes.content}>
               <PerfectScrollbar>

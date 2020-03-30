@@ -57,6 +57,7 @@ class ObjectiveRow extends React.Component{
 		    color = "seagreen";
 		    completionText = "Done"
 		}
+		objective.tags.sort();
 		return(
 			<TableRow
 	          hover
@@ -69,8 +70,8 @@ class ObjectiveRow extends React.Component{
 	          <TableCell>
 	            {objective.endDate}
 	          </TableCell>
-	          <TableCell>{objective.assignedUsers.map(tag=>(<Chip clickable label={tag} />) )}</TableCell>
-	          <TableCell>{objective.tags.map(tag=>(<Chip clickable label={tag} />) )}</TableCell>
+	          <TableCell>{objective.assignedUsers.map(tag=>(<Chip label={tag} />) )}</TableCell>
+	          <TableCell>{objective.tags.map(tag=>(<Chip clickable label={tag} onClick={()=>this.props.onClickTag(tag)} />) )}</TableCell>
 	          <TableCell>
 	          	<Button
 	          		style={{color: color}}
