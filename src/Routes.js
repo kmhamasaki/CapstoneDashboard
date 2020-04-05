@@ -18,6 +18,7 @@ import {
   NotFound as NotFoundView,
   Goals as GoalsView,
   Objectives as ObjectivesView,
+  MyObjectives as MyObjectivesView,
 } from './views';
 
 export const Routes = () => {
@@ -101,10 +102,16 @@ export const Routes = () => {
         layout={MainLayout}
         path="/objectives/:id?"
       />
+      <RouteWithLayout
+        component={MyObjectivesView}
+        exact
+        layout={MainLayout}
+        path="/my-objectives"
+      />
       <Redirect
         exact
         from="/"
-        to="/dashboard"
+        to="/my-workspace"
       />
       <Redirect to="/not-found" />
     </Switch>

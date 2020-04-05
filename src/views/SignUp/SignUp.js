@@ -180,6 +180,7 @@ const SignUp = props => {
             .auth()
             .createUserWithEmailAndPassword(email.value, password.value).then(() => {
               localStorage.setItem(loggedIn, true);
+              localStorage.setItem('email', email.value);
               history.push('/my-workspace');
             }).catch(error => {
               alert(error);
