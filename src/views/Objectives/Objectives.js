@@ -535,6 +535,10 @@ class Objectives extends React.Component{
     let allTags = []
     for(let i=0; i<objectivesData.length; i++){
       let objectiveTags = objectivesData[i].tags
+      // error handling
+      if(objectiveTags == null){
+        continue;
+      }
       for(let j=0; j<objectiveTags.length; j++){
         if(allTags.indexOf(objectiveTags[j])==-1){
           allTags.push(objectiveTags[j]);
