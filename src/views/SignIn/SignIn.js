@@ -148,6 +148,8 @@ const SignIn = props => {
           .auth()
           .signInWithEmailAndPassword(email.value, password.value).then(() => {
             localStorage.setItem(loggedIn, true);
+            localStorage.setItem('email', email.value);
+            console.log(localStorage.getItem('email'));
             history.push('/my-workspace');
           })
           .catch(error => {
