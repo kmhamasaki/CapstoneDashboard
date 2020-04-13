@@ -4,8 +4,10 @@ import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import { Avatar, Typography } from '@material-ui/core';
+import axios from 'axios';
+import { withStyles } from '@material-ui/styles';
 
-const useStyles = makeStyles(theme => ({
+const classes = theme => ({
   root: {
     display: 'flex',
     flexDirection: 'column',
@@ -19,44 +21,62 @@ const useStyles = makeStyles(theme => ({
   name: {
     marginTop: theme.spacing(1)
   }
-}));
+});
 
-const Profile = props => {
-  const { className, ...rest } = props;
+class Profile extends React.Component {
 
-  const classes = useStyles();
+  constructor(props) {
+    super(props);
+    this.state = {
+      name: '',
+    };
+  }
 
-  const user = {
-    name: 'Shen Zhi',
-    avatar: '/images/avatars/avatar_11.png',
-    bio: 'Brain Director'
+  componentWillMount() {
+    let storageEmail = localStorage.getItem('email');
+    console.log(storageEmail);
+    axios({
+      method: 'post',
+      url: 'http://localhost:4000/get_user',
+      data: {
+        email: storageEmail,
+      }
+    })
+    .catch(function (error) {
+    // handle error
+      alert(error);
+    })
+    .then(function (res) {
+      console.log(res);
+      let data = res.data;
+      this.setState({
+            isLoaded: true,
+            name: "Welcome " + data.fname + " " + data.lname + "!"
+          });
+    }.bind(this));
+
   };
 
-  return (
-    <div
-      {...rest}
-      className={clsx(classes.root, className)}
-    >
-      <Avatar
-        alt="Person"
-        className={classes.avatar}
-        component={RouterLink}
-        src={user.avatar}
-        to="/settings"
-      />
-      <Typography
-        className={classes.name}
-        variant="h4"
+  render() {
+    const { className, ...rest } = this.props;
+    const { name, isLoaded } = this.state;
+
+    return (
+      <div
+        {...rest}
+        className={clsx(classes.root, className)}
       >
-        {user.name}
-      </Typography>
-      <Typography variant="body2">{user.bio}</Typography>
-    </div>
-  );
-};
+        <Typography
+          className={classes.name}
+          variant="h4"
+        >
+          {name}
+        </Typography>
+      </div>
+    );
+  };
+}
 
-Profile.propTypes = {
-  className: PropTypes.string
-};
 
-export default Profile;
+
+export default withStyles(classes)(Profile);

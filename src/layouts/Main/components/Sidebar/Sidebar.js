@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import { Divider, Drawer } from '@material-ui/core';
 import DashboardIcon from '@material-ui/icons/Dashboard';
+import ListIcon from '@material-ui/icons/List';
 import PeopleIcon from '@material-ui/icons/People';
 import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasket';
 import TextFieldsIcon from '@material-ui/icons/TextFields';
@@ -51,7 +52,7 @@ const Sidebar = props => {
     {
       title: 'My Objectives',
       href: '/my-objectives',
-      icon: <DashboardIcon />
+      icon: <ListIcon />
     },
     {
       title: 'Account',
