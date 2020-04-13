@@ -77,15 +77,8 @@ const TasksProgress = props => {
             >
               {props.goal.name}
             </Typography>
-            <Typography variant="h3">{props.goal.progress}%</Typography>
           </Grid>
         </Grid>
-        <LinearProgress
-          className={classes.progress}
-          value={props.goal.progress}
-          variant="determinate"
-          color="secondary"
-        />
       </div>
       <IconButton aria-label="edit" onClick={()=>props.openEditor(props.goal)}>
           <EditIcon />
