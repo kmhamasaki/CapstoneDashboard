@@ -5,7 +5,6 @@ import { RouteWithLayout } from './components';
 import { Main as MainLayout, Minimal as MinimalLayout } from './layouts';
 
 import {
-
   Icons as IconsView,
   Account as AccountView,
   Settings as SettingsView,
@@ -21,8 +20,6 @@ import {
 export const Routes = () => {
   return (
     <Switch>
-      
-      
       <RouteWithLayout
         component={IconsView}
         exact
