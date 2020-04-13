@@ -121,7 +121,7 @@ class MyWorkspace extends React.Component {
     console.log(121);
     axios({
       method: 'post',
-      url: 'http://localhost:4000/get_strategies',
+      url: 'https://capstone-strategic-planning.herokuapp.com/get_strategies',
       data: {
         workspaceId: 1,
         userId: 1
@@ -187,7 +187,7 @@ class MyWorkspace extends React.Component {
       const description = event.target.elements.description.value;
       axios({
       method: 'post',
-        url: '/create_strategy',
+        url: 'https://capstone-strategic-planning.herokuapp.com/create_strategy',
         data: {
           name: name,
           description: description == "" ? "description" : description
@@ -229,7 +229,7 @@ class MyWorkspace extends React.Component {
       console.log(strategy)
       axios({
         method: 'post',
-        url: 'http://localhost:4000/update_strategy',
+        url: 'https://capstone-strategic-planning.herokuapp.com/update_strategy',
         data: strategy
       })
       .catch(function (error) {
@@ -263,7 +263,7 @@ class MyWorkspace extends React.Component {
       console.log(strategy);
       axios({
         method: 'post',
-        url: 'http://localhost:4000/delete_strategy',
+        url: 'https://capstone-strategic-planning.herokuapp.com/delete_strategy',
         data: {
           strategyId: strategy.strategyId
         }

@@ -141,7 +141,7 @@ class Objectives extends React.Component{
     let objectiveId = objective.objectiveId;
       axios({
         method: 'post',
-        url: 'http://localhost:4000/update_objective_status',
+        url: 'https://capstone-strategic-planning.herokuapp.com/update_objective_status',
         data: {
           objectiveId: objectiveId,
           status: newStatus
@@ -172,7 +172,7 @@ class Objectives extends React.Component{
     // get objectives
     axios({
       method: 'post',
-      url: 'http://localhost:4000/get_objectives',
+      url: 'https://capstone-strategic-planning.herokuapp.com/get_objectives',
       data: {
         userId: 1,
         goalId: this.goalId
@@ -185,6 +185,15 @@ class Objectives extends React.Component{
     .then(function (res) {
       let data = res.data;
       // sort objectives with default field and direction
+      data.objectives.map(objective=>{
+        // error checking
+        if(!Array.isArray(objective.tags)){
+          objective.tags = []
+        }
+        if(!Array.isArray(objective.assignedUsers)){
+          objective.assignedUsers = []
+        }
+      })
       data.objectives.sort(this.getComparator(this.state.sortField, this.state.direction))
       console.log(data);
       this.setState({
@@ -196,7 +205,7 @@ class Objectives extends React.Component{
     // get all users
     axios({
       method: 'post',
-      url: 'http://localhost:4000/get_all_users',
+      url: 'https://capstone-strategic-planning.herokuapp.com/get_all_users',
     })
     .catch(function (error) {
     // handle error
@@ -213,7 +222,7 @@ class Objectives extends React.Component{
     // get all tags
     axios({
       method: 'post',
-      url: 'http://localhost:4000/get_all_tags',
+      url: 'https://capstone-strategic-planning.herokuapp.com/get_all_tags',
     })
     .catch(function (error) {
     // handle error
@@ -378,6 +387,7 @@ class Objectives extends React.Component{
     const openEditor = objective => {
       console.log(objective)
       let assignedUsers = objective.assignedUsers.map((email)=>getUser(email))
+      console.log(assignedUsers)
       this.setState({
         openEdit: true,
         objective: objective,
@@ -405,7 +415,7 @@ class Objectives extends React.Component{
       console.log(newObjective);
       axios({
       method: 'post',
-        url: '/create_objective',
+        url: 'https://capstone-strategic-planning.herokuapp.com/create_objective',
         data:  newObjective
       })
       .catch(function (error) {
@@ -451,7 +461,7 @@ class Objectives extends React.Component{
       console.log(objective)
       axios({
         method: 'post',
-        url: 'http://localhost:4000/update_objective',
+        url: 'https://capstone-strategic-planning.herokuapp.com/update_objective',
         data: objective
       })
       .catch(function (error) {
@@ -484,7 +494,7 @@ class Objectives extends React.Component{
       console.log(objective);
       axios({
         method: 'post',
-        url: 'http://localhost:4000/delete_objective',
+        url: 'https://capstone-strategic-planning.herokuapp.com/delete_objective',
         data: {
           objectiveId: objective.objectiveId
         }
@@ -528,13 +538,23 @@ class Objectives extends React.Component{
     // sort by first name, then last name
     Users.sort((a,b)=>a.fname.localeCompare(b.fname) ? a.fname.localeCompare(b.fname) : a.fname.localeCompare(b.fname)+a.lname.localeCompare(b.lname))
     // function to return user object from email
-    const getUser = email => Users[Users.findIndex((user => user.email === email))];
+    const getUser = email => {
+      let idx = Users.findIndex((user => user.email === email))
+      if(idx == -1){
+        return {fname: "", lname: "", email: email}
+      }
+      else{ return Users[idx] };
+    }
 
     const objectivesData = data.objectives;
     // get all tags from this page's objectives
     let allTags = []
     for(let i=0; i<objectivesData.length; i++){
       let objectiveTags = objectivesData[i].tags
+      // error handling
+      if(objectiveTags == null){
+        continue;
+      }
       for(let j=0; j<objectiveTags.length; j++){
         if(allTags.indexOf(objectiveTags[j])==-1){
           allTags.push(objectiveTags[j]);
