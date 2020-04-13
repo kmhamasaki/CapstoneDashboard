@@ -721,19 +721,6 @@ class MyObjectives extends React.Component{
                     </TableHead>
                     <TableBody>
                       {ObjectiveRows}
-                      <TableRow
-                        hover
-                        onClick={openAddEditor}
-                      >
-                        <Tooltip title="Add Objective" arrow>
-                          <TableCell
-                            colSpan={7}
-                            align="center"
-                          >
-                            <AddIcon />
-                          </TableCell>
-                        </Tooltip>
-                      </TableRow>
                     </TableBody>
                   </Table>
                 </div>
@@ -770,7 +757,7 @@ class MyObjectives extends React.Component{
                     id="people"
                     defaultValue={this.state.usersSelected ? this.state.usersSelected : []}
                     options={Users}
-                    getOptionLabel={(option) => option.fname + " " + option.lname + " (" + option.email +")"}
+                    getOptionLabel={(option) => option ? option.fname + " " + option.lname + " (" + option.email +")" : ""}
                     renderOption ={(option) => {
                       return <React.Fragment>
                           <span>{option.fname} {option.lname} <span style={{color:"grey", fontStyle:"italic"}}>{option.email}</span></span>
