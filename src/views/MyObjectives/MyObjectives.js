@@ -186,6 +186,15 @@ class MyObjectives extends React.Component{
       let data = res.data;
       console.log(data);
       // sort objectives with default field and direction
+      data.objectives.map(objective=>{
+        // error checking
+        if(!Array.isArray(objective.tags)){
+          objective.tags = []
+        }
+        if(!Array.isArray(objective.assignedUsers)){
+          objective.assignedUsers = []
+        }
+      })
       data.objectives.sort(this.getComparator(this.state.sortField, this.state.direction))
       console.log(data);
       this.setState({
@@ -529,13 +538,23 @@ class MyObjectives extends React.Component{
     // sort by first name, then last name
     Users.sort((a,b)=>a.fname.localeCompare(b.fname) ? a.fname.localeCompare(b.fname) : a.fname.localeCompare(b.fname)+a.lname.localeCompare(b.lname))
     // function to return user object from email
-    const getUser = email => Users[Users.findIndex((user => user.email === email))];
+    const getUser = email => {
+      let idx = Users.findIndex((user => user.email === email))
+      if(idx == -1){
+        return {fname: "", lname: "", email: email}
+      }
+      else{ return Users[idx] };
+    }
 
     const objectivesData = data.objectives;
     // get all tags from this page's objectives
     let allTags = []
     for(let i=0; i<objectivesData.length; i++){
       let objectiveTags = objectivesData[i].tags
+      // error handling
+      if(objectiveTags == null){
+        continue;
+      }
       for(let j=0; j<objectiveTags.length; j++){
         if(allTags.indexOf(objectiveTags[j])==-1){
           allTags.push(objectiveTags[j]);
