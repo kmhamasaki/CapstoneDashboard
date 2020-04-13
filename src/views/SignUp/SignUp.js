@@ -160,7 +160,7 @@ const SignUp = props => {
     const { firstName, lastName, email, password, workspace } = event.target.elements;
     axios({
       method: 'post',
-      url: 'http://localhost:4000/add_user',
+      url: 'https://capstone-strategic-planning.herokuapp.com/add_user',
       data: {
         fname: firstName.value,
         lname: lastName.value,

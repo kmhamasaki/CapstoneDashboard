@@ -141,7 +141,7 @@ class MyObjectives extends React.Component{
     let objectiveId = objective.objectiveId;
       axios({
         method: 'post',
-        url: 'http://localhost:4000/update_objective_status',
+        url: 'https://capstone-strategic-planning.herokuapp.com/update_objective_status',
         data: {
           objectiveId: objectiveId,
           status: newStatus
@@ -173,7 +173,7 @@ class MyObjectives extends React.Component{
     console.log(storageEmail);
     axios({
       method: 'post',
-      url: 'http://localhost:4000/get_my_objectives',
+      url: 'https://capstone-strategic-planning.herokuapp.com/get_my_objectives',
       data: {
         userId: storageEmail,
       }
@@ -197,7 +197,7 @@ class MyObjectives extends React.Component{
     // get all users
     axios({
       method: 'post',
-      url: 'http://localhost:4000/get_all_users',
+      url: 'https://capstone-strategic-planning.herokuapp.com/get_all_users',
     })
     .catch(function (error) {
     // handle error
@@ -214,7 +214,7 @@ class MyObjectives extends React.Component{
     // get all tags
     axios({
       method: 'post',
-      url: 'http://localhost:4000/get_all_tags',
+      url: 'https://capstone-strategic-planning.herokuapp.com/get_all_tags',
     })
     .catch(function (error) {
     // handle error
@@ -406,7 +406,7 @@ class MyObjectives extends React.Component{
       console.log(newObjective);
       axios({
       method: 'post',
-        url: '/create_objective',
+        url: 'https://capstone-strategic-planning.herokuapp.com/create_objective',
         data:  newObjective
       })
       .catch(function (error) {
@@ -452,7 +452,7 @@ class MyObjectives extends React.Component{
       console.log(objective)
       axios({
         method: 'post',
-        url: 'http://localhost:4000/update_objective',
+        url: 'https://capstone-strategic-planning.herokuapp.com/update_objective',
         data: objective
       })
       .catch(function (error) {
@@ -485,7 +485,7 @@ class MyObjectives extends React.Component{
       console.log(objective);
       axios({
         method: 'post',
-        url: 'http://localhost:4000/delete_objective',
+        url: 'https://capstone-strategic-planning.herokuapp.com/delete_objective',
         data: {
           objectiveId: objective.objectiveId
         }

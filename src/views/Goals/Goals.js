@@ -112,7 +112,7 @@ class Goals extends React.Component {
   componentWillMount() {
     axios({
       method: 'post',
-      url: 'http://localhost:4000/get_goals',
+      url: 'https://capstone-strategic-planning.herokuapp.com/get_goals',
       data: {
         strategyId: this.strategyId
       }
@@ -176,7 +176,7 @@ class Goals extends React.Component {
       console.log(this.strategyId)
       axios({
       method: 'post',
-        url: '/create_goal',
+        url: 'https://capstone-strategic-planning.herokuapp.com/create_goal',
         data: {
           strategyId: this.strategyId,
           name: name,
@@ -222,7 +222,7 @@ class Goals extends React.Component {
       console.log(goal)
       axios({
         method: 'post',
-        url: 'http://localhost:4000/update_goal',
+        url: 'https://capstone-strategic-planning.herokuapp.com/update_goal',
         data: goal
       })
       .catch(function (error) {
@@ -256,7 +256,7 @@ class Goals extends React.Component {
       console.log(goal);
       axios({
         method: 'post',
-        url: 'http://localhost:4000/delete_goal',
+        url: 'https://capstone-strategic-planning.herokuapp.com/delete_goal',
         data: {
           goalId: goal.goalId
         }
