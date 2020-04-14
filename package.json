@@ -10,7 +10,7 @@
     "npm": "6.13.4"
   },
   "scripts": {
-    "start": "PORT=$PORT react-scripts start",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
