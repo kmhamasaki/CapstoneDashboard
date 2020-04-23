@@ -298,6 +298,11 @@ class Goals extends React.Component {
 
       return (
         <div className={classes.root}>
+          <div>
+          <Typography variant="h3" gutterBottom>
+            {this.state.data.strategy}
+          </Typography>
+          </div>
           <Grid
             container
             spacing={4}
