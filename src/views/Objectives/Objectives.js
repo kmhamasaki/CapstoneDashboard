@@ -64,14 +64,14 @@ const classes = theme => ({
     display: 'flex',
     alignItems: 'center'
   },
-  avatar: {
-    height: 42,
-    width: 42,
-    marginRight: theme.spacing(1)
-  },
   actions: {
     padding: theme.spacing(1),
     justifyContent: 'flex-end'
+  },
+  chips: {
+    "& > *": {
+      margin: theme.spacing(0.25)
+    }
   }
 });
 
@@ -355,8 +355,6 @@ class Objectives extends React.Component{
   render(){
     const { error, isLoaded, data } = this.state;
     const { classes } = this.props;
-
-    console.log(classes);
 
     while(!isLoaded) {
       return <div className={classes.loadingRoot}>
@@ -650,9 +648,6 @@ class Objectives extends React.Component{
       filteredObjectives2 = filteredObjectives
     }
 
-    console.log(filteredObjectives);
-    console.log(filteredObjectives2);
-
     const ObjectiveRows = filteredObjectives2.map(objective => (
                         <ObjectiveRow key={objective.id} objective={objective} openEditor={openEditor} deleteObjective={this.deleteObjective} toggleStatus={this.toggleStatus} onClickTag={addFilterTag}/>
                         ))
@@ -661,6 +656,11 @@ class Objectives extends React.Component{
     return (
       <div className={classes.root}>
         <div className={classes.contentTable}>
+        <div>
+        <Typography variant="h3" gutterBottom>
+          {this.state.data.strategy} > {this.state.data.goal}
+        </Typography>
+        </div>
         <div>
           <Card>
             <CardHeader
@@ -675,10 +675,10 @@ class Objectives extends React.Component{
                 FILTERS
               </Button>
               <Collapse in={this.state.showFilters}>
-                <Typography>
+                <Typography className={classes.chips}>
                 Tags: {TagChips}
                 </Typography>
-                <Typography>
+                <Typography className={classes.chips}>
                 Status: {StatusChips}
                 </Typography>
                 <Button 
