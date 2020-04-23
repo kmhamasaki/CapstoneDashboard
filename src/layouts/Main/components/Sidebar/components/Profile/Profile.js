@@ -37,7 +37,7 @@ class Profile extends React.Component {
     console.log(storageEmail);
     axios({
       method: 'post',
-      url: 'http://localhost:4000/get_user',
+      url: 'https://capstone-strategic-planning.herokuapp.com/get_user',
       data: {
         email: storageEmail,
       }
