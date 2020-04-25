@@ -152,9 +152,7 @@ class Objectives extends React.Component{
         alert(error);
       })
       .then(function (res) {
-        console.log(res);
         let data = res.data;
-        console.log(data);
         let newData = this.state.data;
         let objIndex = newData.objectives.findIndex((obj => obj.objectiveId == objective.objectiveId));
         newData.objectives[objIndex].status = newStatus
@@ -195,7 +193,6 @@ class Objectives extends React.Component{
         }
       })
       data.objectives.sort(this.getComparator(this.state.sortField, this.state.direction))
-      console.log(data);
       this.setState({
             isLoaded: true,
             data: data
@@ -234,7 +231,6 @@ class Objectives extends React.Component{
       this.setState({
             tagsData: data
           });
-      console.log(data);
     }.bind(this));
   };
 
@@ -383,9 +379,7 @@ class Objectives extends React.Component{
     };
 
     const openEditor = objective => {
-      console.log(objective)
       let assignedUsers = objective.assignedUsers.map((email)=>getUser(email))
-      console.log(assignedUsers)
       this.setState({
         openEdit: true,
         objective: objective,
@@ -421,11 +415,9 @@ class Objectives extends React.Component{
         alert(error);
       })
       .then(function (res) {
-        console.log(res);
         let responseData = res.data;
         // add objectiveId to the previously created objective object
         newObjective.objectiveId = responseData.objectiveId;
-        console.log(data);
         data.objectives.push(newObjective);
         //setting the state "refreshes the page"
         //when you set state, it calls render() again
@@ -456,7 +448,6 @@ class Objectives extends React.Component{
         goalId: this.state.objective.goalId,
         description: "fsdf",
       }
-      console.log(objective)
       axios({
         method: 'post',
         url: 'https://capstone-strategic-planning.herokuapp.com/update_objective',
@@ -467,12 +458,9 @@ class Objectives extends React.Component{
         alert(error);
       })
       .then(function (res) {
-        console.log(res);
         let resdata = res.data;
-        console.log(resdata);
 
         let newData = this.state.data;
-        console.log(newData);
         let objIndex = newData.objectives.findIndex((obj => obj.objectiveId == objective.objectiveId));
 
         newData.objectives[objIndex] = objective;
@@ -486,10 +474,8 @@ class Objectives extends React.Component{
 
     const actuallyDeleteObjective = event => {
       event.preventDefault();
-      console.log("delete!!!!!!");
 
       const objective = this.state.objective;
-      console.log(objective);
       axios({
         method: 'post',
         url: 'https://capstone-strategic-planning.herokuapp.com/delete_objective',
@@ -501,11 +487,8 @@ class Objectives extends React.Component{
         alert(error);
       })
       .then(function (res) {
-        console.log(res);
         let data = res.data;
-        console.log(data);
         let newData = this.state.data;
-        console.log(newData);
         let objIndex = newData.objectives.findIndex((obj => obj.objectiveId == objective.objectiveId));
         newData.objectives.splice(objIndex, 1);
 
@@ -583,9 +566,7 @@ class Objectives extends React.Component{
       })
     }
     const addFilterStatus = (status) => {
-      console.log("ouch")
       let newStatusTags = this.state.filterStatus
-      console.log(newStatusTags)
       newStatusTags[status] = !newStatusTags[status]
       this.setState({
         filterStatus: newStatusTags
@@ -629,7 +610,6 @@ class Objectives extends React.Component{
     }
     // then status
     const filterStatus = this.state.filterStatus;
-    console.log(filterStatus)
     let filteredObjectives2 = []
     const statusFilterApplied = !filterStatus.every((status)=>status===false)
     if(statusFilterApplied){

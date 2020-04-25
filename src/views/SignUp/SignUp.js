@@ -169,10 +169,7 @@ const SignUp = props => {
       }
     })
     .then(async (res) => {
-      console.log("here");
-      console.log(res.data);
       let {success, error }= res.data;
-      console.log(success);
       if(success == true) {
         await fire.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
           .then(function() {
