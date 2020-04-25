@@ -16,14 +16,7 @@ import {
   TextField,
 } from '@material-ui/core';
 import {
-  Budget,
-  TotalUsers,
   TasksProgress,
-  TotalProfit,
-  LatestSales,
-  UsersByDevice,
-  LatestProducts,
-  LatestOrders
 } from './components';
 import { withRouter} from 'react-router-dom';
 import AddIcon from '@material-ui/icons/Add';
@@ -95,7 +88,6 @@ class Goals extends React.Component {
 
 
   deleteGoal(goal){
-    console.log("106");
     this.setState({
       deleteConfirm: true,
       goal: goal,
@@ -122,7 +114,6 @@ class Goals extends React.Component {
       alert(error);
     })
     .then(function (res) {
-      console.log(res);
       let data = res.data;
       this.setState({
             isLoaded: true,
@@ -154,8 +145,6 @@ class Goals extends React.Component {
     };
 
     const openEditor = goal => {
-      console.log("HERE")
-      console.log(goal)
       this.setState({
         openEdit: true,
         goal: goal,
@@ -168,19 +157,15 @@ class Goals extends React.Component {
       this.setState({
         open: false
       });
-      console.log(event.target.elements)
       const name = event.target.elements.title.value;
-      console.log(name)
-      const description = event.target.elements.description.value;
-      console.log(description)
-      console.log(this.strategyId)
+      const description = "description";
       axios({
       method: 'post',
         url: 'https://capstone-strategic-planning.herokuapp.com/create_goal',
         data: {
           strategyId: this.strategyId,
           name: name,
-          description: description == "" ? "description" : description,
+          description: description,
           startDate: "01/01/2020",
           endDate: "01/01/2020"
         }
@@ -190,7 +175,6 @@ class Goals extends React.Component {
         alert(error);
       })
       .then(function (res) {
-        console.log(res);
         let responseData = res.data;
         let newStrategy = {
           strategyId : this.strategyId,
@@ -219,7 +203,6 @@ class Goals extends React.Component {
         name: event.target.elements.title.value,
         description: "description"
       }
-      console.log(goal)
       axios({
         method: 'post',
         url: 'https://capstone-strategic-planning.herokuapp.com/update_goal',
@@ -230,12 +213,9 @@ class Goals extends React.Component {
         alert(error);
       })
       .then(function (res) {
-        console.log(res);
         let resdata = res.data;
-        console.log(resdata);
 
         let newData = this.state.data;
-        console.log(newData);
         let objIndex = newData.goals.findIndex((obj => obj.goalId == goal.goalId));
 
         if(objIndex >= 0)
@@ -250,10 +230,8 @@ class Goals extends React.Component {
 
     const actuallyDeleteGoal = event => {
       event.preventDefault();
-      console.log("delete!!!!!!");
 
       const goal = this.state.goal;
-      console.log(goal);
       axios({
         method: 'post',
         url: 'https://capstone-strategic-planning.herokuapp.com/delete_goal',
@@ -265,11 +243,8 @@ class Goals extends React.Component {
         alert(error);
       })
       .then(function (res) {
-        console.log(res);
         let data = res.data;
-        console.log(data);
         let newData = this.state.data;
-        console.log(newData);
         let objIndex = newData.goals.findIndex((obj => obj.goalId == goal.goalId));
         if(objIndex >= 0)
           newData.goals.splice(objIndex, 1);
@@ -283,12 +258,7 @@ class Goals extends React.Component {
       this.closeDeleteConfirm();
     }
 
-
-    console.log(data);
-
     let goals = data.goals;
-    console.log(goals)
-    console.log("error is"+data.error)
     const cards=[];
 
     for(var i=0;i<goals.length;i++){
@@ -350,16 +320,6 @@ class Goals extends React.Component {
                   name="title"
                   label="Title"
                   multiline
-                  variant="outlined"
-                  fullWidth
-                />
-                <TextField
-                  id="description"
-                  margin="dense"
-                  name="description"
-                  label="Description"
-                  multiline
-                  rows="4"
                   variant="outlined"
                   fullWidth
                 />

@@ -48,7 +48,11 @@ class Profile extends React.Component {
     })
     .then(function (res) {
       console.log(res);
-      let data = res.data;
+      let altData = {
+        fname: '',
+        lname: '',
+      }
+      let data = res ? res.data : altData;
       this.setState({
             isLoaded: true,
             name: "Welcome " + data.fname + " " + data.lname + "!"
