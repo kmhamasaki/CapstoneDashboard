@@ -1,12 +1,8 @@
-import React, { useState } from 'react';
-import { makeStyles } from '@material-ui/styles';
+import React from 'react';
 import {
-  Avatar,
   Card,
-  CardActions,
   CardContent,
   CardHeader,
-  Checkbox,
   Chip,
   CircularProgress,
   Collapse,
@@ -15,28 +11,24 @@ import {
   DialogTitle,
   Divider,
   Button,
-  Grid,
-  Link,
   Table,
   TableBody,
   TableCell,
   TableHead,
-  TablePagination,
   TableRow,
   TableSortLabel,
   TextField,
   Tooltip,
   Typography
 } from '@material-ui/core';
-import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import axios from 'axios';
-import { withRouter, useParams} from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import AddIcon from '@material-ui/icons/Add';
 import ClearAllIcon from '@material-ui/icons/ClearAll';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import { withStyles } from '@material-ui/styles';
-import objectivesDataImport from './ObjectivesList.js'
 import ObjectiveRow from './ObjectiveRow.js'
 import DatePicker from './DatePicker.js'
 
@@ -52,7 +44,7 @@ const classes = theme => ({
     padding: 0
   },
   root: {
-    padding: theme.spacing(3)
+    padding: theme.spacing(4)
   },
   contentTable: {
     marginTop: theme.spacing(2)
@@ -583,7 +575,6 @@ class Objectives extends React.Component{
       })
     }
     const addFilterStatus = (status) => {
-      console.log("ouch")
       let newStatusTags = this.state.filterStatus
       console.log(newStatusTags)
       newStatusTags[status] = !newStatusTags[status]
@@ -629,7 +620,6 @@ class Objectives extends React.Component{
     }
     // then status
     const filterStatus = this.state.filterStatus;
-    console.log(filterStatus)
     let filteredObjectives2 = []
     const statusFilterApplied = !filterStatus.every((status)=>status===false)
     if(statusFilterApplied){
@@ -648,19 +638,34 @@ class Objectives extends React.Component{
       filteredObjectives2 = filteredObjectives
     }
 
-    const ObjectiveRows = filteredObjectives2.map(objective => (
-                        <ObjectiveRow key={objective.id} objective={objective} openEditor={openEditor} deleteObjective={this.deleteObjective} toggleStatus={this.toggleStatus} onClickTag={addFilterTag}/>
-                        ))
+    let ObjectiveRows = []
+
+    if(filteredObjectives2.length===0 && (statusFilterApplied || filterTags.length>0)){
+      ObjectiveRows = <TableRow
+                        hover
+                      >
+                          <TableCell
+                            colSpan={7}
+                            align="center"
+                          >
+                            No objectives found.
+                          </TableCell>
+                      </TableRow>
+    }else{
+      ObjectiveRows = filteredObjectives2.map(objective => (
+                          <ObjectiveRow key={objective.id} objective={objective} openEditor={openEditor} deleteObjective={this.deleteObjective} toggleStatus={this.toggleStatus} onClickTag={addFilterTag}/>
+                          ))
+    }
 
 
     return (
       <div className={classes.root}>
-        <div className={classes.contentTable}>
         <div>
         <Typography variant="h3" gutterBottom>
           {this.state.data.strategy} > {this.state.data.goal}
         </Typography>
         </div>
+        <div className={classes.contentTable}>
         <div>
           <Card>
             <CardHeader
@@ -672,7 +677,7 @@ class Objectives extends React.Component{
                 onClick={()=>this.setState({showFilters:!this.state.showFilters})}
                 color={this.state.filterTags.length>0 || statusFilterApplied ? "secondary" : "default"}
               >
-                FILTERS
+                FILTER
               </Button>
               <Collapse in={this.state.showFilters}>
                 <Typography className={classes.chips}>

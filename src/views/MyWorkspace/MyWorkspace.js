@@ -1,38 +1,21 @@
-import React, { useCallback, useState} from 'react';
-import { makeStyles } from '@material-ui/styles';
+import React from 'react';
 import { 
   Grid, 
-  IconButton, 
   Card, 
-  CardContent,
   CardMedia,
   CircularProgress,
-  Typography, 
   TextField,
   Dialog,
-  DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
   Button,
   Tooltip
 } from '@material-ui/core';
-import {
-  Budget,
-  TotalUsers,
-  TasksProgress,
-  TotalProfit,
-  LatestSales,
-  UsersByDevice,
-  LatestProducts,
-  LatestOrders
-} from './components';
+import { TasksProgress } from './components';
 import { withRouter} from 'react-router-dom';
 import AddIcon from '@material-ui/icons/Add';
-import POST_URL from 'App'
 import axios from 'axios';
 import { withStyles } from '@material-ui/styles';
-import AddCard from '../../components/AddCard';
 
 const classes = theme => ({
   loadingRoot:{
@@ -70,7 +53,8 @@ const classes = theme => ({
   },
   maxHeightWidth: {
     height: "100%",
-    width: "100%"
+    width: "100%",
+    minHeight: '100px'
   }
 });
 
@@ -161,9 +145,6 @@ class MyWorkspace extends React.Component {
         open: false
       });
     };
-    const handleCreate = () => {
-      //dosomething here
-    };
 
     const openEditor = strategy => {
       console.log("HERE")
@@ -190,7 +171,7 @@ class MyWorkspace extends React.Component {
         url: 'https://capstone-strategic-planning.herokuapp.com/create_strategy',
         data: {
           name: name,
-          description: description == "" ? "description" : description
+          description: description === "" ? "description" : description
         }
       })
       .catch(function (error) {
@@ -220,7 +201,6 @@ class MyWorkspace extends React.Component {
     const editStrategy = event => {
       event.preventDefault();
 
-      let deets = event.target.elements;
       const strategy = {
         strategyId : this.state.strategy.strategyId,
         name: event.target.elements.title.value,
@@ -243,7 +223,7 @@ class MyWorkspace extends React.Component {
 
         let newData = this.state.data;
         console.log(newData);
-        let objIndex = newData.strategies.findIndex((obj => obj.strategyId == strategy.strategyId));
+        let objIndex = newData.strategies.findIndex((obj => obj.strategyId === strategy.strategyId));
 
         if(objIndex >= 0)
           newData.strategies[objIndex] = strategy;
@@ -277,7 +257,7 @@ class MyWorkspace extends React.Component {
         console.log(data);
         let newData = this.state.data;
         console.log(newData);
-        let objIndex = newData.strategies.findIndex((obj => obj.strategyId == strategy.strategyId));
+        let objIndex = newData.strategies.findIndex((obj => obj.strategyId === strategy.strategyId));
         if(objIndex >= 0)
           newData.strategies.splice(objIndex, 1);
 
@@ -316,12 +296,12 @@ class MyWorkspace extends React.Component {
               xs={12}
               >
               <Card className={classes.cardRoot}>
-                  <CardMedia className={classes.cardContent, classes.maxHeightWidth}>
+                  <CardMedia className={`${classes.cardContent} ${classes.maxHeightWidth}`}>
                     <Tooltip arrow title="Add Strategy">
                       <Button
                         variant="contained"
                         color="default"
-                        className={classes.button,classes.maxHeightWidth}
+                        className={`${classes.cardContent} ${classes.maxHeightWidth}`}
                         startIcon={<AddIcon />}
                         onClick={handleClickOpen}
                       > 

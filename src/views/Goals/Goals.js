@@ -1,5 +1,4 @@
-import React, { useCallback, useState} from 'react';
-import { makeStyles } from '@material-ui/styles';
+import React from 'react';
 import { 
   Grid, 
   Button,
@@ -8,26 +7,14 @@ import {
   CardContent,
   CircularProgress,
   Dialog,
-  DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
   Typography, 
   TextField,
 } from '@material-ui/core';
-import {
-  Budget,
-  TotalUsers,
-  TasksProgress,
-  TotalProfit,
-  LatestSales,
-  UsersByDevice,
-  LatestProducts,
-  LatestOrders
-} from './components';
+import { TasksProgress } from './components';
 import { withRouter} from 'react-router-dom';
 import AddIcon from '@material-ui/icons/Add';
-import POST_URL from 'App'
 import axios from 'axios';
 import { withStyles } from '@material-ui/styles';
 
