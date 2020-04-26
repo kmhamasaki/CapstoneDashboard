@@ -4,17 +4,15 @@ import {
   Button,
   IconButton,
   TableCell,
-  TableRow,
+  TableRow
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
-import { withStyles } from '@material-ui/styles';
 
 
 class ObjectiveRow extends React.Component{
 	constructor(props){
 		super(props)
-		let mystatus = props.objective.status;
 	}
 
 	render(){
@@ -40,6 +38,7 @@ class ObjectiveRow extends React.Component{
 		  default:
 		  	color = "grey";
 		  	completionText = "null";
+		  	break;
 		}
 		if(objective.tags){
 			objective.tags.sort();

@@ -52,14 +52,6 @@ const classes = theme => ({
   inner: {
     minWidth: 700
   },
-  nameCell: {
-    display: 'flex',
-    alignItems: 'center'
-  },
-  actions: {
-    padding: theme.spacing(1),
-    justifyContent: 'flex-end'
-  },
   chips: {
     "& > *": {
       margin: theme.spacing(0.25)
@@ -339,7 +331,7 @@ class Objectives extends React.Component{
 
   render(){
     const { error, isLoaded, data } = this.state;
-    const { classes } = this.props;
+    const { classes, history } = this.props;
 
     while(!isLoaded) {
       return <div className={classes.loadingRoot}>
@@ -393,7 +385,6 @@ class Objectives extends React.Component{
           description: "adhasd",
           status: 0
       }
-      console.log(newObjective);
       axios({
       method: 'post',
         url: 'https://capstone-strategic-planning.herokuapp.com/create_objective',
@@ -641,7 +632,7 @@ class Objectives extends React.Component{
       <div className={classes.root}>
         <div>
         <Typography variant="h3" gutterBottom>
-          {this.state.data.strategy} > {this.state.data.goal}
+          <span style={{ color: '#2979ff', cursor: 'pointer' }} onClick={() => history.push('/goals/'+this.state.data.strategyId)}> {this.state.data.strategy} </span> > {this.state.data.goal}
         </Typography>
         </div>
         <div className={classes.contentTable}>

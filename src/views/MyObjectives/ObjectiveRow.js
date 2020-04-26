@@ -13,7 +13,6 @@ import EditIcon from '@material-ui/icons/Edit';
 class ObjectiveRow extends React.Component{
 	constructor(props){
 		super(props)
-		let mystatus = props.objective.status;
 	}
 
 	render(){
@@ -35,9 +34,11 @@ class ObjectiveRow extends React.Component{
 		  case 2:
 		    color = "seagreen";
 		    completionText = "Done";
+		    break;
 		  default:
 		  	color = "grey";
 		  	completionText = "null";
+		  	break;
 		}
 		if(objective.tags){
 			objective.tags.sort();
@@ -54,8 +55,8 @@ class ObjectiveRow extends React.Component{
 	          <TableCell>
 	            {objective.endDate}
 	          </TableCell>
-	          <TableCell>{objective.assignedUsers.map(tag=>(<Chip label={tag} />) )}</TableCell>
-	          <TableCell>{objective.tags.map(tag=>(<Chip clickable label={tag} onClick={()=>this.props.onClickTag(tag)} />) )}</TableCell>
+	          <TableCell>{objective.assignedUsers.map(tag=>(<Chip style={{margin: "2px"}} label={tag} />) )}</TableCell>
+	          <TableCell>{objective.tags.map(tag=>(<Chip style={{margin: "2px"}} clickable label={tag} onClick={()=>this.props.onClickTag(tag)} />) )}</TableCell>
 	          <TableCell>
 	          	<Button
 	          		style={{color: color}}

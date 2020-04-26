@@ -42,7 +42,7 @@ const classes = theme => ({
     padding: 0
   },
   root: {
-    padding: theme.spacing(3)
+    padding: theme.spacing(4)
   },
   contentTable: {
     marginTop: theme.spacing(2)
@@ -50,18 +50,10 @@ const classes = theme => ({
   inner: {
     minWidth: 700
   },
-  nameCell: {
-    display: 'flex',
-    alignItems: 'center'
-  },
-  avatar: {
-    height: 42,
-    width: 42,
-    marginRight: theme.spacing(1)
-  },
-  actions: {
-    padding: theme.spacing(1),
-    justifyContent: 'flex-end'
+  chips: {
+    "& > *": {
+      margin: theme.spacing(0.25)
+    }
   }
 });
 
@@ -634,10 +626,10 @@ class MyObjectives extends React.Component{
                 FILTERS
               </Button>
               <Collapse in={this.state.showFilters}>
-                <Typography>
+                <Typography className={classes.chips}>
                 Tags: {TagChips}
                 </Typography>
-                <Typography>
+                <Typography className={classes.chips}>
                 Status: {StatusChips}
                 </Typography>
                 <Button 
