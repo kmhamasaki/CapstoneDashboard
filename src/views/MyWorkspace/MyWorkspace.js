@@ -87,7 +87,6 @@ class MyWorkspace extends React.Component {
 
 
   deleteObjective(strategy){
-    console.log("106");
     this.setState({
       deleteConfirm: true,
       strategy: strategy,
@@ -102,7 +101,6 @@ class MyWorkspace extends React.Component {
   }
 
   componentWillMount() {
-    console.log(121);
     axios({
       method: 'post',
       url: 'https://capstone-strategic-planning.herokuapp.com/get_strategies',
@@ -116,7 +114,6 @@ class MyWorkspace extends React.Component {
       alert(error);
     })
     .then(function (res) {
-      console.log(res);
       let data = res.data;
       this.setState({
             isLoaded: true,
@@ -147,8 +144,6 @@ class MyWorkspace extends React.Component {
     };
 
     const openEditor = strategy => {
-      console.log("HERE")
-      console.log(strategy)
       this.setState({
         openEdit: true,
         strategy: strategy,
@@ -162,16 +157,14 @@ class MyWorkspace extends React.Component {
       this.setState({
         open: false
       });
-      console.log(event.target.elements.title.value);
-      console.log(event.target.elements.description.value);
       const name = event.target.elements.title.value;
-      const description = event.target.elements.description.value;
+      const description = "description";
       axios({
       method: 'post',
         url: 'https://capstone-strategic-planning.herokuapp.com/create_strategy',
         data: {
           name: name,
-          description: description === "" ? "description" : description
+          description: description
         }
       })
       .catch(function (error) {
@@ -179,7 +172,6 @@ class MyWorkspace extends React.Component {
         alert(error);
       })
       .then(function (res) {
-        console.log(res);
         let responseData = res.data;
         let newStrategy = {
           strategyId : responseData.strategyId,
@@ -206,7 +198,6 @@ class MyWorkspace extends React.Component {
         name: event.target.elements.title.value,
         description: "description"
       }
-      console.log(strategy)
       axios({
         method: 'post',
         url: 'https://capstone-strategic-planning.herokuapp.com/update_strategy',
@@ -217,14 +208,10 @@ class MyWorkspace extends React.Component {
         alert(error);
       })
       .then(function (res) {
-        console.log(res);
         let resdata = res.data;
-        console.log(resdata);
-
         let newData = this.state.data;
         console.log(newData);
         let objIndex = newData.strategies.findIndex((obj => obj.strategyId === strategy.strategyId));
-
         if(objIndex >= 0)
           newData.strategies[objIndex] = strategy;
         this.setState({
@@ -237,10 +224,8 @@ class MyWorkspace extends React.Component {
 
     const actuallyDeleteStrategy = event => {
       event.preventDefault();
-      console.log("delete!!!!!!");
 
       const strategy = this.state.strategy;
-      console.log(strategy);
       axios({
         method: 'post',
         url: 'https://capstone-strategic-planning.herokuapp.com/delete_strategy',
@@ -252,9 +237,7 @@ class MyWorkspace extends React.Component {
         alert(error);
       })
       .then(function (res) {
-        console.log(res);
         let data = res.data;
-        console.log(data);
         let newData = this.state.data;
         console.log(newData);
         let objIndex = newData.strategies.findIndex((obj => obj.strategyId === strategy.strategyId));
@@ -270,7 +253,6 @@ class MyWorkspace extends React.Component {
       this.closeDeleteConfirm();
     }
 
-    console.log(data)
     const strategies = data.strategies;
     const cards=[];
 
@@ -317,32 +299,6 @@ class MyWorkspace extends React.Component {
               sm={6}
               xs={12}
             >
-            {/*}
-              <Card className={classes.cardRoot}>
-                <CardContent className={classes.cardContent}>
-                  <Grid
-                    container
-                    className = {classes.content}
-                  >
-                    <Grid item>
-                      <IconButton aria-label="add" onClick={handleClickOpen}>
-                        <AddIcon className={classes.addIcon} />
-                      </IconButton>
-                    </Grid>
-                    <Grid item>
-                      <Typography
-                        className={classes.title}
-                        color="textSecondary"
-                        gutterBottoms
-                        variant="h1"
-                      >
-                      Add Strategy
-                      </Typography>
-                    </Grid>
-                  </Grid>
-                </CardContent>
-              </Card>
-            {*/}
             </Grid>
           </Grid>
           <Dialog open={this.state.open} onClose={handleClose} aria-labelledby="form-dialog-title">
@@ -359,16 +315,6 @@ class MyWorkspace extends React.Component {
                   name="title"
                   label="Title"
                   multiline
-                  variant="outlined"
-                  fullWidth
-                />
-                <TextField
-                  id="description"
-                  margin="dense"
-                  name="description"
-                  label="Description"
-                  multiline
-                  rows="4"
                   variant="outlined"
                   fullWidth
                 />

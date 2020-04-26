@@ -53,16 +53,6 @@ const Sidebar = props => {
       title: 'My Objectives',
       href: '/my-objectives',
       icon: <ListIcon />
-    },
-    {
-      title: 'Account',
-      href: '/account',
-      icon: <AccountBoxIcon />
-    },
-    {
-      title: 'Settings',
-      href: '/settings',
-      icon: <SettingsIcon />
     }
   ];
 
