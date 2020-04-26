@@ -2,9 +2,6 @@ import React, { useState } from 'react';
 import DateFnsUtils from '@date-io/date-fns'; // choose your lib
 import Grid from '@material-ui/core/Grid';
 import {
-  DatePicker,
-  TimePicker,
-  DateTimePicker,
   KeyboardDatePicker,
   MuiPickersUtilsProvider,
 } from '@material-ui/pickers';

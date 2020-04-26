@@ -1,34 +1,13 @@
-import React, { useState } from 'react';
-import { makeStyles } from '@material-ui/styles';
+import React from 'react';
 import {
-  Avatar,
-  Card,
-  CardActions,
-  CardContent,
-  CardHeader,
-  Checkbox,
   Chip,
-  Divider,
   Button,
   IconButton,
-  Link,
-  Table,
-  TableBody,
   TableCell,
-  TableHead,
-  TablePagination,
-  TableRow,
-  Tooltip,
-  Typography
+  TableRow
 } from '@material-ui/core';
-import PerfectScrollbar from 'react-perfect-scrollbar'
-import axios from 'axios';
-import { withRouter, useParams} from 'react-router-dom';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
-import { withStyles } from '@material-ui/styles';
-import objectivesData from './ObjectivesList.js'
-
 
 
 class ObjectiveRow extends React.Component{
@@ -55,7 +34,10 @@ class ObjectiveRow extends React.Component{
 		    break;
 		  case 2:
 		    color = "seagreen";
-		    completionText = "Done"
+		    completionText = "Done";
+		  default:
+		  	color = "grey";
+		  	completionText = "null";
 		}
 		if(objective.tags){
 			objective.tags.sort();

@@ -35,7 +35,11 @@ class ObjectiveRow extends React.Component{
 		    break;
 		  case 2:
 		    color = "seagreen";
-		    completionText = "Done"
+		    completionText = "Done";
+		    break;
+		  default:
+		  	color = "grey";
+		  	completionText = "null";
 		}
 		if(objective.tags){
 			objective.tags.sort();

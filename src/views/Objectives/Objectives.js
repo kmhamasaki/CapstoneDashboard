@@ -258,9 +258,6 @@ class Objectives extends React.Component{
   getComparator(field, order){
     // tiebreaker uses status to determine what should be below
     // this sorts by 'NOT STARTED' to 'IN PROGRESS' to 'COMPLETED'
-    function tieBreaker(a,b) {
-      return a.status - b.status
-    }
 
     if(field === 'title'){
       return order === 'desc' 

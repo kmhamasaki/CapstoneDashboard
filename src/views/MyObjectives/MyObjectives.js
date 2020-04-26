@@ -1,12 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { makeStyles } from '@material-ui/styles';
+import React from 'react';
 import {
-  Avatar,
   Card,
-  CardActions,
   CardContent,
   CardHeader,
-  Checkbox,
   Chip,
   CircularProgress,
   Collapse,
@@ -15,28 +11,22 @@ import {
   DialogTitle,
   Divider,
   Button,
-  Grid,
-  Link,
   Table,
   TableBody,
   TableCell,
   TableHead,
-  TablePagination,
   TableRow,
   TableSortLabel,
   TextField,
-  Tooltip,
   Typography
 } from '@material-ui/core';
-import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import axios from 'axios';
-import { withRouter, useParams} from 'react-router-dom';
-import AddIcon from '@material-ui/icons/Add';
+import { withRouter } from 'react-router-dom';
 import ClearAllIcon from '@material-ui/icons/ClearAll';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import { withStyles } from '@material-ui/styles';
-import objectivesDataImport from './ObjectivesList.js'
 import ObjectiveRow from './ObjectiveRow.js'
 import DatePicker from './DatePicker.js'
 
@@ -154,7 +144,7 @@ class MyObjectives extends React.Component{
       .then(function (res) {
         let data = res.data;
         let newData = this.state.data;
-        let objIndex = newData.objectives.findIndex((obj => obj.objectiveId == objective.objectiveId));
+        let objIndex = newData.objectives.findIndex((obj => obj.objectiveId === objective.objectiveId));
         newData.objectives[objIndex].status = newStatus
 
         this.setState({
@@ -264,10 +254,6 @@ class MyObjectives extends React.Component{
 
   getComparator(field, order){
     // tiebreaker uses status to determine what should be below
-    // this sorts by 'NOT STARTED' to 'IN PROGRESS' to 'COMPLETED'
-    function tieBreaker(a,b) {
-      return a.status - b.status
-    }
 
     if(field === 'title'){
       return order === 'desc' 
