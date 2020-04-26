@@ -1,45 +1,61 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/styles';
-import { Grid } from '@material-ui/core';
+import { withStyles } from '@material-ui/styles';
+import { withRouter} from 'react-router-dom';
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  CardActions,
+  Divider,
+  Grid,
+  Button,
+  TextField
+} from '@material-ui/core';
 
 import { AccountProfile, AccountDetails } from './components';
 
-const useStyles = makeStyles(theme => ({
+const classes = theme => ({
   root: {
     padding: theme.spacing(4)
   }
-}));
+});
 
-const Account = () => {
-  const classes = useStyles();
+class Account extends React.Component {
 
-  return (
-    <div className={classes.root}>
-      <Grid
-        container
-        spacing={4}
-      >
+  render(){  
+    const { classes } = this.props;
+    return (
+
+      <div className={classes.root}>
         <Grid
-          item
-          lg={4}
-          md={6}
-          xl={4}
-          xs={12}
+          container
+          spacing={4}
         >
-          <AccountProfile />
-        </Grid>
-        <Grid
-          item
-          lg={8}
-          md={6}
-          xl={8}
-          xs={12}
-        >
-          <AccountDetails />
-        </Grid>
-      </Grid>
-    </div>
-  );
-};
+          <Grid
+            item
+            lg={12}
+            md={12}
+            xl={12}
+            xs={12}
+          >
+            <Card>
+              <CardContent>
+                <Grid
+                  container
+                  spacing={3}
+                >
+                  <Grid item md={6} xs={12}>
 
-export default Account;
+                  </Grid>
+                </Grid>
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid>
+      </div>
+    )
+  }
+}
+
+export default withStyles(classes)(withRouter(Account));

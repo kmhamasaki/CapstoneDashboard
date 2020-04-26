@@ -27,16 +27,6 @@ const useStyles = makeStyles(theme => ({
   title: {
     fontWeight: 700
   },
-  avatar: {
-    backgroundColor: theme.palette.primary.main,
-    color: theme.palette.primary.contrastText,
-    height: 56,
-    width: 56
-  },
-  icon: {
-    height: 32,
-    width: 32
-  },
   progress: {
     marginTop: theme.spacing(3),
   }
@@ -56,17 +46,13 @@ const TasksProgress = props => {
           xl={4}
           xs={12}
         >
-    <div>
     <Card
       {...rest}
       className={clsx(classes.root, className)}
     >
-      <CardContent>
-      <div style={{ cursor: 'pointer' }} onClick={() => history.push('/objectives/'+props.goal.goalId)}>
-        <Grid
-          container
-          justify="space-between"
-        >
+      <CardContent className={classes.root}>
+      <div style={{ cursor: 'pointer', height: '100%' }} onClick={() => history.push('/objectives/'+props.goal.goalId)}>
+        <Grid container direction="column" justify="center" className={classes.root}>
           <Grid item>
             <Typography
               className={classes.title}
@@ -77,17 +63,18 @@ const TasksProgress = props => {
               {props.goal.name}
             </Typography>
           </Grid>
+          <Grid item>
+            <IconButton aria-label="edit" onClick={(e)=>{e.stopPropagation(); props.openEditor(props.goal)}}>
+                <EditIcon />
+              </IconButton>
+              <IconButton aria-label="delete" onClick={(e)=>{e.stopPropagation(); props.deleteGoal(props.goal)}}>
+                <DeleteIcon />
+              </IconButton>
+          </Grid>
         </Grid>
       </div>
-      <IconButton aria-label="edit" onClick={()=>props.openEditor(props.goal)}>
-          <EditIcon />
-        </IconButton>
-        <IconButton aria-label="delete" onClick={()=>props.deleteGoal(props.goal)}>
-          <DeleteIcon />
-        </IconButton>
       </CardContent>
     </Card>
-    </div>
     </Grid>
   );
 };

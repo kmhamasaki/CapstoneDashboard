@@ -4,18 +4,13 @@ import PropTypes from 'prop-types';
 import validate from 'validate.js';
 import { makeStyles } from '@material-ui/styles';
 import {
-  Grid,
   Button,
-  IconButton,
   TextField,
   Link,
-  FormHelperText,
   Typography
 } from '@material-ui/core';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import {fire, loggedIn} from '../../config/Fire';
 import firebase from 'firebase';
-import {authenticated} from 'App'
 import axios from 'axios';
 
 const schema = {

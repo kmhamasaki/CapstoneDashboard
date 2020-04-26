@@ -27,16 +27,6 @@ const useStyles = makeStyles(theme => ({
   title: {
     fontWeight: 700
   },
-  avatar: {
-    backgroundColor: theme.palette.primary.main,
-    color: theme.palette.primary.contrastText,
-    height: 56,
-    width: 56
-  },
-  icon: {
-    height: 32,
-    width: 32
-  },
   progress: {
     marginTop: theme.spacing(3)
   }
@@ -48,7 +38,7 @@ const TasksProgress = props => {
   const { className, history, ...rest } = props;
 
   const classes = useStyles();
-  
+
   return (
     <Grid
           item
@@ -57,45 +47,44 @@ const TasksProgress = props => {
           xl={4}
           xs={12}
         >
-        <div >
 
     <Card
       {...rest}
       className={clsx(classes.root, className)}
     >
-      <CardContent>
-      <div style={{ cursor: 'pointer' }} onClick={() => history.push('/goals/'+props.strategy.strategyId)}>
-        <Grid
-          container
-          justify="space-between"
-        >
+      <CardContent className={classes.root}>
+        <div style={{ cursor: 'pointer' , height: '100%'}} onClick={() => history.push('/goals/'+props.strategy.strategyId)}>
+        <Grid container direction="column" justify="center" className={classes.root}>
           <Grid item>
-            <Typography
-              className={classes.title}
-              color="textSecondary"
-              gutterBottoms
-              variant="h1"
-            >
-              {props.strategy.name}
-            </Typography>
-            <Typography variant="h3">{props.strategy.completion ? props.strategy.completion : 0}%</Typography>
+          <Typography
+            className={classes.title}
+            color="textSecondary"
+            gutterBottoms
+            variant="h1"
+          >
+            {props.strategy.name}
+          </Typography>
+          </Grid>
+          <Grid item>
+          <Typography variant="h3">{props.strategy.completion ? props.strategy.completion : 0}%</Typography>
+          <LinearProgress
+            className={classes.progress}
+            value={props.strategy.completion ? props.strategy.completion : 0}
+            variant="determinate"
+          />
+          </Grid>
+          <Grid item>
+          <IconButton aria-label="edit" onClick={(e)=>{e.stopPropagation(); props.openEditor(props.strategy);}}>
+            <EditIcon />
+          </IconButton>
+          <IconButton aria-label="delete" onClick={(e)=>{e.stopPropagation(); props.deleteObjective(props.strategy);}}>
+            <DeleteIcon />
+          </IconButton>
           </Grid>
         </Grid>
-        <LinearProgress
-          className={classes.progress}
-          value={props.strategy.completion ? props.strategy.completion : 0}
-          variant="determinate"
-        />
         </div>
-        <IconButton aria-label="edit" onClick={()=>props.openEditor(props.strategy)}>
-          <EditIcon />
-        </IconButton>
-        <IconButton aria-label="delete" onClick={()=>props.deleteObjective(props.strategy)}>
-          <DeleteIcon />
-        </IconButton>
       </CardContent>
     </Card>
-    </div>
     </Grid>
   );
 };
