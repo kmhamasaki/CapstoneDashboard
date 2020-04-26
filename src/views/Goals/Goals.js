@@ -12,13 +12,7 @@ import {
   Typography, 
   TextField,
 } from '@material-ui/core';
-<<<<<<< HEAD
 import { TasksProgress } from './components';
-=======
-import {
-  TasksProgress,
-} from './components';
->>>>>>> 988fb68fbf9a4222a44fc7eb3058350426abcbe7
 import { withRouter} from 'react-router-dom';
 import AddIcon from '@material-ui/icons/Add';
 import axios from 'axios';
