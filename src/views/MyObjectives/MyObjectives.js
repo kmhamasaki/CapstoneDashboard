@@ -604,9 +604,24 @@ class MyObjectives extends React.Component{
       filteredObjectives2 = filteredObjectives
     }
 
-    const ObjectiveRows = filteredObjectives2.map(objective => (
-                        <ObjectiveRow key={objective.id} objective={objective} openEditor={openEditor} deleteObjective={this.deleteObjective} toggleStatus={this.toggleStatus} onClickTag={addFilterTag}/>
-                        ))
+    let ObjectiveRows = []
+
+    if(filteredObjectives2.length===0 && (statusFilterApplied || filterTags.length>0)){
+      ObjectiveRows = <TableRow
+                        hover
+                      >
+                          <TableCell
+                            colSpan={7}
+                            align="center"
+                          >
+                            No objectives found.
+                          </TableCell>
+                      </TableRow>
+    }else{
+      ObjectiveRows = filteredObjectives2.map(objective => (
+                          <ObjectiveRow key={objective.id} objective={objective} openEditor={openEditor} deleteObjective={this.deleteObjective} toggleStatus={this.toggleStatus} onClickTag={addFilterTag}/>
+                          ))
+    }
 
 
     return (
